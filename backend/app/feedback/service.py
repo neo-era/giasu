@@ -2,8 +2,17 @@ from sqlalchemy import select
 from sqlalchemy.orm import Session
 
 from app.feedback.schemas import FeedbackCreate, FeedbackOut
-from app.models import BinhLuan, NguoiDung, PhanAnh
+from app.models import (
+    BinhLuan,
+    BoHoiQuy,
+    DongTinh,
+    HangDoiDuyet,
+    NguoiDung,
+    PhanAnh,
+    ThongBao,
+)
 from app.models.enums import (
+    ChuDePhanAnh,
     TrangThaiKiemDuyet,
     TrangThaiPhanAnh,
     VaiTro,
@@ -36,7 +45,75 @@ def tao_phan_anh(db: Session, user: NguoiDung, body: FeedbackCreate) -> PhanAnh:
     )
     db.add(pa)
     db.flush()
+    # F09: phản ánh "lỗi lời giải" → đẩy vào hàng đợi rà soát của lớp kiểm chứng
+    if body.chu_de == ChuDePhanAnh.loi_loi_giai:
+        db.add(
+            HangDoiDuyet(
+                loai="phan_anh_loi",
+                noi_dung=pa.tieu_de,
+                chi_tiet={"phan_anh_id": pa.id, "loi_giai_id": pa.loi_giai_id},
+            )
+        )
+        db.flush()
     return pa
+
+
+def them_binh_luan(db: Session, user: NguoiDung, phan_anh: PhanAnh, noi_dung: str) -> BinhLuan:
+    """Bình luận cộng đồng (FR-F03) — có kiểm duyệt như nội dung người dùng."""
+    noi_dung, _ = che_thong_tin_ca_nhan(noi_dung)
+    kq = classify_text(noi_dung)
+    bl = BinhLuan(
+        phan_anh_id=phan_anh.id,
+        nguoi_dang_id=user.id,
+        vai_tro_nguoi_dang=user.vai_tro,
+        la_phan_hoi_chinh_thuc=False,
+        noi_dung=noi_dung,
+        trang_thai_kiem_duyet=kq.quyet_dinh,
+    )
+    db.add(bl)
+    db.flush()
+    return bl
+
+
+def dong_tinh(db: Session, user: NguoiDung, phan_anh: PhanAnh) -> int:
+    """'Tôi cũng gặp' (FR-F04) — mỗi người tối đa 1 lần."""
+    da_co = db.scalar(
+        select(DongTinh).where(
+            DongTinh.nguoi_dung_id == user.id, DongTinh.phan_anh_id == phan_anh.id
+        )
+    )
+    if da_co is None:
+        db.add(DongTinh(nguoi_dung_id=user.id, phan_anh_id=phan_anh.id))
+        phan_anh.so_dong_tinh += 1
+        db.flush()
+    return phan_anh.so_dong_tinh
+
+
+def giai_quyet_loi(db: Session, phan_anh: PhanAnh, mo_ta_sua: str) -> BoHoiQuy:
+    """Sửa xong lỗi lời giải → cập nhật phản ánh + bổ sung bộ hồi quy + thông báo
+    người gửi (FR-F09/F10, UC-04)."""
+    phan_anh.trang_thai = TrangThaiPhanAnh.da_tra_loi
+    hq = BoHoiQuy(nguon_phan_anh_id=phan_anh.id, mo_ta=mo_ta_sua, nhan="loi_loi_giai")
+    db.add(hq)
+    if phan_anh.nguoi_gui_id:
+        db.add(
+            ThongBao(
+                nguoi_dung_id=phan_anh.nguoi_gui_id,
+                noi_dung=f"Phản ánh '{phan_anh.tieu_de}' đã được xử lý và bổ sung kiểm chứng.",
+            )
+        )
+    db.flush()
+    return hq
+
+
+def thong_bao_cua(db: Session, nguoi_dung_id: str) -> list[ThongBao]:
+    return list(
+        db.scalars(
+            select(ThongBao)
+            .where(ThongBao.nguoi_dung_id == nguoi_dung_id)
+            .order_by(ThongBao.created_at.desc())
+        ).all()
+    )
 
 
 def to_out(pa: PhanAnh) -> FeedbackOut:

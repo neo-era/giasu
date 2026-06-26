@@ -1,6 +1,7 @@
 from typing import Annotated
 
 from fastapi import APIRouter, Depends, HTTPException, status
+from pydantic import BaseModel
 from sqlalchemy.orm import Session
 
 from app.auth.deps import get_current_active_user, require_roles
@@ -15,9 +16,13 @@ from app.feedback.schemas import (
 from app.feedback.service import (
     VAI_TRO_DOI_NGU,
     doi_trang_thai,
+    dong_tinh,
+    giai_quyet_loi,
     liet_ke,
     liet_ke_binh_luan,
     tao_phan_anh,
+    them_binh_luan,
+    thong_bao_cua,
     to_out,
     tra_loi_chinh_thuc,
 )
@@ -91,3 +96,50 @@ def change_status(phan_anh_id: str, body: StatusIn, db: DbDep, _: TeamDep) -> Fe
     db.commit()
     db.refresh(pa)
     return to_out(pa)
+
+
+class CommentIn(BaseModel):
+    noi_dung: str
+
+
+class GiaiQuyetIn(BaseModel):
+    mo_ta_sua: str
+
+
+class ThongBaoOut(BaseModel):
+    id: str
+    noi_dung: str
+    da_doc: bool
+
+
+@router.post("/{phan_anh_id}/comment", status_code=201)
+def comment(phan_anh_id: str, body: CommentIn, db: DbDep, user: UserDep) -> dict[str, str]:
+    pa = _get_phan_anh(db, phan_anh_id)
+    bl = them_binh_luan(db, user, pa, body.noi_dung)
+    db.commit()
+    return {"id": bl.id, "trang_thai_kiem_duyet": bl.trang_thai_kiem_duyet.value}
+
+
+@router.post("/{phan_anh_id}/dong-tinh")
+def vote(phan_anh_id: str, db: DbDep, user: UserDep) -> dict[str, int]:
+    pa = _get_phan_anh(db, phan_anh_id)
+    so = dong_tinh(db, user, pa)
+    db.commit()
+    return {"so_dong_tinh": so}
+
+
+@router.post("/{phan_anh_id}/giai-quyet-loi", response_model=FeedbackOut)
+def giai_quyet(phan_anh_id: str, body: GiaiQuyetIn, db: DbDep, _: TeamDep) -> FeedbackOut:
+    pa = _get_phan_anh(db, phan_anh_id)
+    giai_quyet_loi(db, pa, body.mo_ta_sua)
+    db.commit()
+    db.refresh(pa)
+    return to_out(pa)
+
+
+@router.get("/thong-bao/cua-toi", response_model=list[ThongBaoOut])
+def my_notifications(db: DbDep, user: UserDep) -> list[ThongBaoOut]:
+    return [
+        ThongBaoOut(id=t.id, noi_dung=t.noi_dung, da_doc=t.da_doc)
+        for t in thong_bao_cua(db, user.id)
+    ]
