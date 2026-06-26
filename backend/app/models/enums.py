@@ -108,6 +108,11 @@ class TrangThaiPhanAnh(str, enum.Enum):
     da_dong = "da_dong"
 
 
+class MucDichOTP(str, enum.Enum):
+    dang_ky = "dang_ky"
+    dang_nhap = "dang_nhap"
+
+
 class TrangThaiKiemDuyet(str, enum.Enum):
     """Kiểm duyệt nội dung người dùng (FR-F08, NFR-33)."""
 

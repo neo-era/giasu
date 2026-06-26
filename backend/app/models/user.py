@@ -21,6 +21,9 @@ class NguoiDung(IdMixin, TimestampMixin, Base):
     # An toàn vị thành niên + đồng ý phụ huynh (FR-C03, NFR-31)
     la_vi_thanh_nien: Mapped[bool] = mapped_column(Boolean, default=False, nullable=False)
     dong_y_phu_huynh: Mapped[bool] = mapped_column(Boolean, default=False, nullable=False)
+    phu_huynh_id: Mapped[str | None] = mapped_column(
+        ForeignKey("nguoi_dung.id", name="fk_nguoi_dung_phu_huynh"), index=True
+    )
 
     ho_so: Mapped[Optional["HoSoHocSinh"]] = relationship(
         back_populates="nguoi_dung", uselist=False

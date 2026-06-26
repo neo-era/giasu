@@ -12,10 +12,20 @@ class Settings(BaseSettings):
 
     database_url: str = "postgresql+psycopg://giasu:giasu@localhost:5432/giasu"
     cors_origins: list[str] = ["http://localhost:3000"]
+    debug: bool = True
 
     # Khóa nhà cung cấp LLM (điền ở .env, không commit)
     llm_api_key_primary: str = ""
     llm_api_key_secondary: str = ""
+
+    # Xác thực (B03). jwt_secret PHẢI đổi ở production.
+    jwt_secret: str = "dev-secret-doi-ngay-o-production-toi-thieu-32-byte"
+    jwt_algorithm: str = "HS256"
+    jwt_expire_minutes: int = 480  # 8 giờ (FR-C01)
+
+    # OTP
+    otp_length: int = 6
+    otp_expire_minutes: int = 10
 
 
 settings = Settings()

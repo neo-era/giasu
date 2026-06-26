@@ -2,6 +2,7 @@
 `Base.metadata` (phục vụ Alembic autogenerate và `create_all` trong test)."""
 
 from app.db.base import Base
+from app.models.auth import MaXacThuc
 from app.models.billing import Goi, HanMuc, ThanhToan
 from app.models.conversation import HoiThoai, TinNhan
 from app.models.feedback import BinhLuan, PhanAnh
@@ -23,4 +24,5 @@ __all__ = [
     "ThanhToan",
     "PhanAnh",
     "BinhLuan",
+    "MaXacThuc",
 ]
