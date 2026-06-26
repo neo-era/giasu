@@ -42,6 +42,7 @@ Hai persona là 2 system prompt khác nhau (xem `prompts/` — Bộ prompt). Ch�
 - **Lớp kiểm chứng**:
   - *Cấp 1* (tính toán): SymPy — biến đổi, nghiệm, đạo hàm/tích phân, đơn vị.
   - *Cấp 2* (chứng minh, tinh hoa): RAG đối chiếu + cross-check đa model + (Lean/Coq ở GĐ3) + người duyệt (HITL).
+- **Kênh phản ánh & cộng đồng** (FR-F, nâng cấp chủ đạo của SRS v2.2): blog/comment để người dùng báo lỗi lời giải/góp ý; đội ngũ trả lời + đổi trạng thái (RBAC); **kiểm duyệt nội dung người dùng** (spam/độc hại/lộ thông tin) bắt buộc trước khi hiển thị; phản ánh "lỗi lời giải" nối thẳng vào hàng đợi của lớp kiểm chứng (FR-F09). (FR-F01–F08, NFR-33)
 - **Thanh toán**: ưu tiên **VietQR/A2A** (phí ~0); ví Momo/ZaloPay/VNPay là phụ.
 - **Cache**: đệm system prompt + lời giải/đề phổ biến để giảm chi phí token.
 
@@ -50,11 +51,12 @@ Hai persona là 2 system prompt khác nhau (xem `prompts/` — Bộ prompt). Ch�
 ## 4. Cấu trúc thư mục (đề xuất)
 
 ```
-/frontend        # React/Next, KaTeX, chat UI, strategy tree (elite)
+/frontend        # React/Next, KaTeX, chat UI, strategy tree (elite), kênh phản ánh (blog/comment)
 /backend         # FastAPI: auth, router, verification, payment
   /router        # phân loại + định tuyến model (lớp trừu tượng đổi model)
   /verify        # sympy_check.py, crosscheck.py, rag.py
   /personas      # nạp prompt từ /prompts
+  /feedback      # kênh phản ánh (FR-F): gửi/trả lời/trạng thái + kiểm duyệt UGC (FR-F08) + nối hàng đợi kiểm chứng (FR-F09)
 /prompts         # bộ prompt sản xuất (xem file Bộ prompt)
 /benchmark       # bộ chuẩn chương trình VN (Giai đoạn 0) + eval runner
 /docs            # SRS, mô hình kinh tế, kế hoạch
@@ -78,6 +80,18 @@ Hai persona là 2 system prompt khác nhau (xem `prompts/` — Bộ prompt). Ch�
 2. Dựng **khung đo learning gain** (pre/post/retention, có nhóm đối chứng, làm khi tắt AI).
 3. Qua **cổng Go/No-Go** (G1 bộ chuẩn, G2 độ chính xác AI, G3 learning gain) → mới xây MVP.
 Chi tiết: tài liệu *Kế hoạch Giai đoạn 0*.
+
+### Lộ trình sau Giai đoạn 0 (theo *Kế hoạch GĐ MVP–GĐ3*)
+
+Mỗi giai đoạn có **CỔNG RA**; chỉ chuyển tiếp khi vượt cổng. **Learning gain (đo khi tắt AI)** là điều kiện ra cổng ở mọi giai đoạn — KHÔNG dùng engagement.
+
+| GĐ | Trọng tâm | Nhóm FR chính | Cổng ra |
+|----|-----------|---------------|---------|
+| **MVP** | Lõi + Đại trà (Toán 12, 1–2 chương) | FR-C01–C12; FR-M01,M02,M03,M05,M06,M07; FR-L01,L02,L03,L04,L08; FR-F01,F02,F05,F06,F07,F08 | **M-gate**: learning gain > đối chứng (không tụt khi tắt AI); độ chính xác đạt ngưỡng vận hành; đơn vị kinh tế đại trà có đường tới dương (free đã siết, chuyển đổi đạt mục tiêu) |
+| **GĐ2** | Lớp Tinh hoa + chiều sâu đại trà | FR-E01–E05,E08; FR-M04; FR-L05,L06,L07,L09; FR-F03,F04,F09,F10; FR-C09 + phụ huynh + phân tích | **E-gate**: ≥1 hợp đồng B2B; đơn vị KT tinh hoa dương (HLV tiết chế, định giá cao, giới hạn câu); tỷ lệ phát hiện lỗi chứng minh đạt ngưỡng, false positive thấp; learning gain đại trà duy trì dương |
+| **GĐ3** | Nâng cao & mở rộng (**cuốn chiếu**) | FR-E06,E07,E09,E10; FR-F11; mở rộng môn/lớp; tính năng phụ | **ROI từng năng lực** dương + có nhu cầu/đối tác; sandbox cô lập đạt kiểm thử bảo mật (nếu làm Virtual Judge) |
+
+**Nguyên tắc phân kỳ:** đại trà (rẻ, nhanh) đi trước để xây dòng tiền + kiểm chứng độ tin cậy; đắp lớp tinh hoa lên **cùng lõi**; GĐ3 làm **cuốn chiếu theo nhu cầu/đối tác, KHÔNG làm đồng loạt**. *Ngoại lệ fast-track:* có đối tác B2B trường chuyên cam kết sớm → đẩy phần tinh hoa GĐ2 song song (tinh hoa không vướng bài toán free-burn của đại trà). Chi tiết: *Kế hoạch GĐ MVP–GĐ3*.
 
 ---
 

@@ -22,7 +22,7 @@ Bằng chứng khoa học cho thấy **gia sư AI không mặc nhiên giúp họ
 | 04 | **KeHoach_GiaiDoan0_v1.0.docx** | Tiền đề bắt buộc trước MVP: bộ chuẩn chương trình VN + khung đo learning gain + cổng Go/No-Go. |
 | 05 | **KeHoach_CacGiaiDoan_MVP-GD3_v1.0.docx** | Kế hoạch chi tiết MVP, GĐ2, GĐ3: phạm vi FR, mốc thời gian, cổng ra, rủi ro. |
 | 06 | **CLAUDE.md** | File ngữ cảnh để build bằng Claude Code/Cowork: 9 nguyên tắc bất biến, kiến trúc, anti-pattern. |
-| 07 | **Bo_prompt_v1.0.md** | Thư viện 8 system prompt sản xuất (Thầy An, Giáo sư Ngô, OCR, kiểm chứng, chấm barem, cross-check, strategy tree, ôn tập). |
+| 07 | **Bo_prompt_v1.0.md** | Thư viện 17 system prompt sản xuất, phủ trọn MVP→GĐ3: Thầy An, Giáo sư Ngô, OCR, kiểm chứng, chấm barem, cross-check, strategy tree, ôn tập, kiểm duyệt UGC, chẩn đoán trình độ, sinh đề GDPT, RAG trích dẫn, kiểm tra tắt-AI, Virtual Judge, Lean/Coq, dịch thuật, xuất chuyên luận. Có bảng ánh xạ prompt↔giai đoạn. |
 
 ### Thư mục `demo/`
 - **Demo_ThayAn_v1.0.html** — nguyên mẫu gia sư gợi mở (chạy thật, có nhập ảnh + render công thức).
