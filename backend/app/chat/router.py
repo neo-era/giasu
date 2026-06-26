@@ -23,8 +23,9 @@ from app.chat.service import (
 from app.db.session import get_db
 from app.llm import ChatMessage, get_llm_service
 from app.models import HoiThoai, NguoiDung, TinNhan
-from app.models.enums import VaiTinNhan
+from app.models.enums import MucDoHoc, VaiTinNhan
 from app.router import LLMRouter
+from app.scaffolding import directive_ho_tro, tinh_muc_ho_tro
 from app.tutor import directive_che_do
 
 router = APIRouter(prefix="/chat", tags=["chat"])
@@ -84,6 +85,9 @@ def _prepare(db: Session, conv: HoiThoai, user: NguoiDung, body: MessageIn):
     # Cổng nỗ lực thật do B14 tính; tạm chưa qua → giữ chế độ gợi mở.
     da_qua_cong = False
     chi_dan = directive_che_do(body.che_do, da_qua_cong)
+    # Scaffolding theo trình độ (FR-L02); streak tiến bộ tích hợp ở B22/B31.
+    muc = tinh_muc_ho_tro(MucDoHoc(level))
+    chi_dan = f"{chi_dan}\n{directive_ho_tro(muc)}"
     system = build_system_prompt(decision.persona, level, chi_dan)
     messages = [ChatMessage(role="system", content=system)]
     messages += history_messages(db, conv.id)
