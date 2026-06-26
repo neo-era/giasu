@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Phản ánh &amp; Góp ý — Nền tảng Gia sư AI</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,500;0,600;1,500&family=Be+Vietnam+Pro:wght@400;500;600;700&display=swap" rel="stylesheet" />
+<style>
+  :root{
+    --board:#163a30; --board-2:#10302a; --wood:#6b4a2b;
+    --paper:#fbf7ef; --card:#ffffff; --ink:#2a2620; --muted:#8b8473;
+    --gold:#c98a2b; --gold-soft:#f3e6cd; --line:#e7e0d2; --green-soft:#e7efe9;
+    --shadow:0 1px 2px rgba(40,35,25,.06),0 6px 18px rgba(40,35,25,.07);
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--paper);color:var(--ink);font-family:"Be Vietnam Pro",system-ui,sans-serif;font-size:15.5px;line-height:1.55;-webkit-font-smoothing:antialiased}
+  .wrap{max-width:760px;margin:0 auto;padding:0 14px 60px}
+
+  header.top{
+    background:linear-gradient(180deg,var(--board),var(--board-2));
+    border-bottom:6px solid var(--wood);color:#f1ede0;padding:18px 0 20px;margin-bottom:18px;
+  }
+  .top .wrap{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+  .ttl{font-family:"Lora",serif;font-size:23px;font-weight:600}
+  .sub{color:#c9c6b6;font-size:13px;margin-top:2px}
+  .adminbtn{background:rgba(255,255,255,.08);color:#f1ede0;border:1px solid rgba(255,255,255,.2);padding:8px 12px;border-radius:10px;font-family:inherit;font-size:13px;cursor:pointer}
+  .adminbtn.on{background:var(--gold);border-color:var(--gold);color:#26210f;font-weight:600}
+
+  .bar{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-bottom:14px}
+  .newbtn{background:var(--board);color:#f1ede0;border:none;padding:10px 16px;border-radius:11px;font-family:inherit;font-weight:600;font-size:14px;cursor:pointer}
+  .newbtn:hover{background:var(--board-2)}
+  select,.chip{font-family:inherit;font-size:13px}
+  select{border:1px solid var(--line);border-radius:9px;padding:8px 10px;background:var(--card);color:var(--ink)}
+  .spacer{flex:1}
+
+  .compose{background:var(--card);border:1px solid var(--line);border-left:3px solid var(--gold);border-radius:14px;padding:16px;margin-bottom:18px;box-shadow:var(--shadow);display:none}
+  .compose.show{display:block;animation:rise .2s ease}
+  @keyframes rise{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+  .compose h3{margin:0 0 12px;font-family:"Lora",serif;font-size:17px}
+  .field{margin-bottom:10px}
+  .field label{display:block;font-size:12.5px;font-weight:600;color:var(--muted);margin-bottom:4px}
+  .field input,.field textarea,.field select{width:100%;border:1px solid var(--line);border-radius:10px;padding:10px 12px;font-family:inherit;font-size:14.5px;background:#fff;color:var(--ink)}
+  .field textarea{resize:vertical;min-height:90px}
+  .field input:focus,.field textarea:focus,.field select:focus{outline:none;border-color:var(--gold);box-shadow:0 0 0 3px rgba(201,138,43,.16)}
+  .row2{display:flex;gap:10px}
+  .row2 .field{flex:1}
+  .actions{display:flex;gap:8px;justify-content:flex-end;margin-top:6px}
+  .ghost{background:transparent;border:1px solid var(--line);color:var(--muted);padding:9px 14px;border-radius:10px;font-family:inherit;cursor:pointer}
+  .primary{background:var(--gold);border:none;color:#26210f;padding:9px 16px;border-radius:10px;font-family:inherit;font-weight:600;cursor:pointer}
+
+  .post{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px;margin-bottom:14px;box-shadow:var(--shadow)}
+  .post-head{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:8px}
+  .badge{font-size:11px;font-weight:600;padding:3px 9px;border-radius:999px;white-space:nowrap}
+  .cat{background:var(--green-soft);color:#1f4a3d}
+  .st-moi{background:#eef1f5;color:#5b6470}
+  .st-xuly{background:#fcefd7;color:#9a6a16}
+  .st-tl{background:#e3f1e8;color:#246b43}
+  .post h2{font-family:"Lora",serif;font-size:18px;margin:2px 0 6px;line-height:1.35}
+  .body{white-space:pre-wrap;margin:0 0 8px}
+  .meta{font-size:12px;color:var(--muted);display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+  .meta .agree{background:transparent;border:1px solid var(--line);border-radius:999px;padding:4px 10px;cursor:pointer;font-family:inherit;font-size:12px;color:var(--ink)}
+  .meta .agree:hover{border-color:var(--gold);background:var(--gold-soft)}
+  .linkbtn{background:none;border:none;color:var(--board);font-family:inherit;font-size:12.5px;cursor:pointer;padding:0;text-decoration:underline;text-underline-offset:2px}
+
+  .reply{background:#f3f8f4;border:1px solid #cfe3d6;border-left:3px solid #2e6b58;border-radius:11px;padding:12px 14px;margin:10px 0 4px}
+  .reply .rh{font-size:12px;font-weight:700;color:#246b43;display:flex;align-items:center;gap:6px;margin-bottom:5px}
+  .reply .rh::before{content:"✓";display:inline-grid;place-items:center;width:16px;height:16px;border-radius:50%;background:#2e6b58;color:#fff;font-size:11px}
+
+  .comments{margin-top:12px;border-top:1px dashed var(--line);padding-top:10px;display:none}
+  .comments.show{display:block}
+  .cmt{padding:8px 0;border-bottom:1px solid #f0ebe0}
+  .cmt:last-child{border-bottom:none}
+  .cmt .ca{font-weight:600;font-size:13px}
+  .cmt .ct{font-size:11px;color:var(--muted);margin-left:6px}
+  .cmt .cb{font-size:14px;margin-top:2px;white-space:pre-wrap}
+  .cmtbox{display:flex;gap:8px;margin-top:8px}
+  .cmtbox input{flex:1;border:1px solid var(--line);border-radius:9px;padding:8px 11px;font-family:inherit;font-size:13.5px}
+  .cmtbox input:focus{outline:none;border-color:var(--gold)}
+  .cmtbox button{background:var(--board);color:#f1ede0;border:none;border-radius:9px;padding:0 14px;font-family:inherit;cursor:pointer;font-size:13px}
+
+  .admin-tools{display:none;gap:8px;flex-wrap:wrap;margin-top:10px;padding-top:10px;border-top:1px dashed var(--line)}
+  .admin .admin-tools{display:flex}
+  .admin-tools textarea{width:100%;border:1px solid var(--line);border-radius:10px;padding:9px 12px;font-family:inherit;font-size:14px;min-height:60px}
+  .mini{font-size:12px;padding:6px 10px;border-radius:8px;border:1px solid var(--line);background:#fff;cursor:pointer;font-family:inherit}
+  .mini:hover{border-color:var(--gold);background:var(--gold-soft)}
+
+  .empty{text-align:center;color:var(--muted);padding:40px 16px}
+  .empty h3{font-family:"Lora",serif;color:var(--ink);margin:0 0 6px}
+  .loading{text-align:center;color:var(--muted);padding:30px}
+  .note{font-size:11.5px;color:var(--muted);text-align:center;margin-top:18px;line-height:1.5}
+</style>
+</head>
+<body>
+  <header class="top">
+    <div class="wrap">
+      <div>
+        <div class="ttl">Phản ánh &amp; Góp ý</div>
+        <div class="sub">Báo lỗi lời giải · góp ý tính năng · phản hồi từ đội ngũ</div>
+      </div>
+      <button id="adminToggle" class="adminbtn">Chế độ đội ngũ</button>
+    </div>
+  </header>
+
+  <div class="wrap">
+    <div class="bar">
+      <button id="newBtn" class="newbtn">+ Gửi phản ánh</button>
+      <div class="spacer"></div>
+      <select id="fCat"><option value="">Tất cả chủ đề</option></select>
+      <select id="fStatus">
+        <option value="">Mọi trạng thái</option>
+        <option value="Mới">Mới</option>
+        <option value="Đang xử lý">Đang xử lý</option>
+        <option value="Đã trả lời">Đã trả lời</option>
+      </select>
+      <select id="fSort">
+        <option value="new">Mới nhất</option>
+        <option value="agree">Nhiều đồng tình</option>
+      </select>
+    </div>
+
+    <div id="compose" class="compose">
+      <h3>Gửi phản ánh mới</h3>
+      <div class="field">
+        <label>Tiêu đề</label>
+        <input id="cTitle" maxlength="120" placeholder="VD: Lời giải bài tích phân Chương 3 sai dấu" />
+      </div>
+      <div class="row2">
+        <div class="field">
+          <label>Chủ đề</label>
+          <select id="cCat"></select>
+        </div>
+        <div class="field">
+          <label>Tên hiển thị (tùy chọn)</label>
+          <input id="cAuthor" maxlength="40" placeholder="VD: Minh – lớp 12" />
+        </div>
+      </div>
+      <div class="field">
+        <label>Nội dung</label>
+        <textarea id="cBody" maxlength="2000" placeholder="Mô tả chi tiết: bài nào, sai/khó ở đâu, mong muốn của em..."></textarea>
+      </div>
+      <div class="actions">
+        <button id="cCancel" class="ghost">Hủy</button>
+        <button id="cSubmit" class="primary">Gửi phản ánh</button>
+      </div>
+    </div>
+
+    <div id="list"><div class="loading">Đang tải phản ánh…</div></div>
+
+    <div class="note">
+      Dữ liệu được lưu chung và hiển thị cho mọi người dùng bản demo này.<br>
+      “Chế độ đội ngũ” ở đây chỉ để minh họa — bản chính thức sẽ phân quyền theo vai trò.
+    </div>
+  </div>
+
+<script>
+  const CATS = ["Lỗi nội dung/lời giải","Góp ý tính năng","Vấn đề thanh toán","Trải nghiệm học","Khác"];
+  const stClass = s => s==="Đã trả lời"?"st-tl":(s==="Đang xử lý"?"st-xuly":"st-moi");
+  let admin = false;
+  let cache = [];
+  const memFallback = []; // nếu storage không khả dụng
+  let useMem = false;
+
+  // ---- storage helpers ----
+  async function sList(){
+    if(useMem) return memFallback.slice();
+    try{
+      const res = await window.storage.list("post:", true);
+      const keys = (res && res.keys) || [];
+      const out = [];
+      for(const k of keys){
+        try{ const r = await window.storage.get(k, true); if(r&&r.value) out.push(JSON.parse(r.value)); }catch(e){}
+      }
+      return out;
+    }catch(e){ useMem=true; return memFallback.slice(); }
+  }
+  async function sSet(post){
+    if(useMem){ const i=memFallback.findIndex(p=>p.id===post.id); if(i>=0)memFallback[i]=post; else memFallback.push(post); return; }
+    try{ await window.storage.set(post.id, JSON.stringify(post), true); }
+    catch(e){ useMem=true; memFallback.push(post); }
+  }
+
+  // ---- init selects ----
+  const fCat=document.getElementById("fCat"), cCat=document.getElementById("cCat");
+  CATS.forEach(c=>{ fCat.add(new Option(c,c)); cCat.add(new Option(c,c)); });
+
+  // ---- compose ----
+  const compose=document.getElementById("compose");
+  document.getElementById("newBtn").onclick=()=>{ compose.classList.toggle("show"); if(compose.classList.contains("show")) document.getElementById("cTitle").focus(); };
+  document.getElementById("cCancel").onclick=()=>compose.classList.remove("show");
+  document.getElementById("cSubmit").onclick=submitPost;
+
+  async function submitPost(){
+    const title=document.getElementById("cTitle").value.trim();
+    const body=document.getElementById("cBody").value.trim();
+    if(!title||!body){ alert("Vui lòng nhập tiêu đề và nội dung."); return; }
+    const post={
+      id:"post:"+Date.now()+":"+Math.random().toString(36).slice(2,7),
+      title, body,
+      category:cCat.value||CATS[0],
+      author:document.getElementById("cAuthor").value.trim()||"Ẩn danh",
+      status:"Mới", agrees:0, createdAt:Date.now(), reply:null, comments:[]
+    };
+    await sSet(post);
+    document.getElementById("cTitle").value=""; document.getElementById("cBody").value=""; document.getElementById("cAuthor").value="";
+    compose.classList.remove("show");
+    await refresh();
+  }
+
+  // ---- admin ----
+  document.getElementById("adminToggle").onclick=function(){
+    admin=!admin; this.classList.toggle("on",admin);
+    this.textContent= admin?"Đang ở chế độ đội ngũ":"Chế độ đội ngũ";
+    document.getElementById("list").classList.toggle("admin",admin);
+  };
+
+  // ---- filters ----
+  ["fCat","fStatus","fSort"].forEach(id=>document.getElementById(id).onchange=render);
+
+  function rel(ts){
+    const s=Math.floor((Date.now()-ts)/1000);
+    if(s<60)return "vừa xong"; if(s<3600)return Math.floor(s/60)+" phút trước";
+    if(s<86400)return Math.floor(s/3600)+" giờ trước"; return Math.floor(s/86400)+" ngày trước";
+  }
+  const esc=s=>(s||"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
+
+  async function refresh(){ cache=await sList(); render(); }
+
+  function render(){
+    const list=document.getElementById("list");
+    list.classList.toggle("admin",admin);
+    let items=cache.slice();
+    const fc=fCat.value, fs=document.getElementById("fStatus").value, srt=document.getElementById("fSort").value;
+    if(fc) items=items.filter(p=>p.category===fc);
+    if(fs) items=items.filter(p=>p.status===fs);
+    items.sort((a,b)=> srt==="agree" ? (b.agrees-a.agrees)||(b.createdAt-a.createdAt) : b.createdAt-a.createdAt);
+
+    if(!items.length){ list.innerHTML='<div class="empty"><h3>Chưa có phản ánh nào</h3><p>Hãy là người đầu tiên gửi góp ý cho đội ngũ.</p></div>'; return; }
+    list.innerHTML="";
+    items.forEach(p=>list.appendChild(card(p)));
+  }
+
+  function card(p){
+    const el=document.createElement("div"); el.className="post";
+    el.innerHTML=`
+      <div class="post-head">
+        <span class="badge cat">${esc(p.category)}</span>
+        <span class="badge ${stClass(p.status)}">${esc(p.status)}</span>
+      </div>
+      <h2>${esc(p.title)}</h2>
+      <p class="body">${esc(p.body)}</p>
+      <div class="meta">
+        <span>${esc(p.author)}</span><span>·</span><span>${rel(p.createdAt)}</span>
+        <button class="agree">👍 Tôi cũng gặp (${p.agrees||0})</button>
+        <button class="linkbtn toggleC">${(p.comments||[]).length} bình luận</button>
+      </div>`;
+
+    if(p.reply){
+      const r=document.createElement("div"); r.className="reply";
+      r.innerHTML=`<div class="rh">Phản hồi từ đội ngũ · ${rel(p.reply.at)}</div><div class="body">${esc(p.reply.body)}</div>`;
+      el.appendChild(r);
+    }
+
+    // comments
+    const cwrap=document.createElement("div"); cwrap.className="comments";
+    (p.comments||[]).forEach(c=>{
+      const d=document.createElement("div"); d.className="cmt";
+      d.innerHTML=`<span class="ca">${esc(c.author)}</span><span class="ct">${rel(c.at)}</span><div class="cb">${esc(c.body)}</div>`;
+      cwrap.appendChild(d);
+    });
+    const cbox=document.createElement("div"); cbox.className="cmtbox";
+    cbox.innerHTML=`<input placeholder="Viết bình luận..." maxlength="500"><button>Gửi</button>`;
+    cbox.querySelector("button").onclick=async()=>{
+      const inp=cbox.querySelector("input"); const v=inp.value.trim(); if(!v)return;
+      p.comments=p.comments||[]; p.comments.push({author: admin?"Đội ngũ":"Bạn", body:v, at:Date.now()});
+      await sSet(p); await refresh();
+    };
+    cwrap.appendChild(cbox);
+    el.appendChild(cwrap);
+
+    el.querySelector(".toggleC").onclick=()=>cwrap.classList.toggle("show");
+    el.querySelector(".agree").onclick=async()=>{ p.agrees=(p.agrees||0)+1; await sSet(p); await refresh(); };
+
+    // admin tools
+    const at=document.createElement("div"); at.className="admin-tools";
+    at.innerHTML=`
+      <textarea placeholder="Soạn phản hồi chính thức của đội ngũ...">${p.reply?esc(p.reply.body):""}</textarea>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;width:100%">
+        <button class="primary" style="font-size:13px">Đăng phản hồi</button>
+        <button class="mini" data-s="Đang xử lý">Đánh dấu: Đang xử lý</button>
+        <button class="mini" data-s="Mới">Đánh dấu: Mới</button>
+      </div>`;
+    at.querySelector(".primary").onclick=async()=>{
+      const v=at.querySelector("textarea").value.trim(); if(!v)return;
+      p.reply={body:v, at:Date.now()}; p.status="Đã trả lời"; await sSet(p); await refresh();
+    };
+    at.querySelectorAll(".mini").forEach(b=>b.onclick=async()=>{ p.status=b.dataset.s; await sSet(p); await refresh(); });
+    el.appendChild(at);
+
+    return el;
+  }
+
+  // ---- seed demo nếu trống ----
+  async function seedIfEmpty(){
+    const cur=await sList();
+    if(cur.length) return;
+    const now=Date.now();
+    const seed=[
+      { id:"post:"+(now-1)+":seed1", title:"Lời giải bài tích phân ở Chương 3 hình như sai dấu",
+        body:"Em làm bài tích phân từng phần, đáp án của thầy ra dấu cộng nhưng em tính ra dấu trừ. Nhờ đội ngũ kiểm tra lại ạ.",
+        category:"Lỗi nội dung/lời giải", author:"Minh – lớp 12", status:"Đã trả lời", agrees:4, createdAt:now-7200000,
+        reply:{body:"Cảm ơn em đã báo. Đội ngũ đã kiểm tra: lời giải gốc bị nhầm dấu ở bước đặt u–dv, em tính đúng. Bọn anh đã sửa và bổ sung vào bộ kiểm chứng. 👏", at:now-3600000},
+        comments:[{author:"Lan", body:"Mình cũng gặp lỗi này hôm qua.", at:now-5400000}] },
+      { id:"post:"+(now-2)+":seed2", title:"Mong có chế độ ôn lại các lỗi cũ theo lịch",
+        body:"App trả lời rất tốt, nhưng em hay quên dạng bài từng sai. Mong có tính năng nhắc ôn lại sau vài ngày.",
+        category:"Góp ý tính năng", author:"Phụ huynh An", status:"Đang xử lý", agrees:7, createdAt:now-86400000,
+        reply:null, comments:[] }
+    ];
+    for(const s of seed) await sSet(s);
+  }
+
+  (async()=>{ await seedIfEmpty(); await refresh(); })();
+</script>
+</body>
+</html>
