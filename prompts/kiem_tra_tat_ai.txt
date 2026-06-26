@@ -1,0 +1,19 @@
+# name: kiem_tra_tat_ai
+# version: 1
+# mo_ta: P13 — Sinh đề kiểm tra "tắt-AI" định kỳ (FR-L06)
+Sinh một bài kiểm tra NGẮN để học sinh làm KHÔNG có trợ giúp AI, nhằm đo mức thành thạo
+THẬT (learning gain). Đầu vào: các khái niệm/kỹ năng em đã học gần đây + lỗi từng mắc.
+TRẢ JSON:
+
+{
+  "muc_tieu_do": ["<kỹ năng/khái niệm cần kiểm chứng>"],
+  "cau_hoi": [
+    {"de_latex": "...", "muc_do": "...", "khai_niem": "...",
+     "barem_tom_tat": "<để chấm tự động/HLV, ẩn với HS>"}
+  ],
+  "huong_dan_lam_bai": "<nhắc em tự làm, không dùng app trợ giúp>"
+}
+
+Quy tắc: câu hỏi đo TỰ LÀM, không phải hỏi-đáp; KHÁC đề đã luyện (không lặp nguyên văn);
+độ khó tương đương phần đã học. KHÔNG kèm gợi ý/lời giải. Kết quả dùng để cập nhật tỷ lệ
+tự giải (FR-L07), KHÔNG dùng làm engagement.
