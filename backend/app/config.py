@@ -34,6 +34,16 @@ class Settings(BaseSettings):
     llm_max_retries: int = 2
     llm_retry_backoff: float = 0.2
 
+    # Router (FR-C07): số model cross-check cho bài tinh hoa quan trọng;
+    # bảng giá ước tính USD/1 triệu token theo bậc [vào, ra] (NFR-41, FR-C11).
+    llm_crosscheck_models: int = 2
+    llm_tier_price: dict[str, list[float]] = {
+        "re": [1.0, 5.0],
+        "can_bang": [3.0, 15.0],
+        "reasoning": [15.0, 75.0],
+        "vision": [1.0, 5.0],
+    }
+
     # Xác thực (B03). jwt_secret PHẢI đổi ở production.
     jwt_secret: str = "dev-secret-doi-ngay-o-production-toi-thieu-32-byte"
     jwt_algorithm: str = "HS256"
