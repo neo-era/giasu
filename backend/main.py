@@ -11,6 +11,7 @@ from app.feedback.router import router as feedback_router
 from app.metrics.router import router as metrics_router
 from app.ocr.router import router as ocr_router
 from app.problembank.router import router as problembank_router
+from app.strategy.router import router as strategy_router
 
 app = FastAPI(title="Gia su AI - Backend", version="0.1.0")
 
@@ -31,6 +32,7 @@ app.include_router(billing_router)
 app.include_router(feedback_router)
 app.include_router(metrics_router)
 app.include_router(admin_router)
+app.include_router(strategy_router)
 
 
 @app.get("/health")

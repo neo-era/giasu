@@ -115,7 +115,10 @@ def _prepare(db: Session, conv: HoiThoai, user: NguoiDung, body: MessageIn):
     system = build_system_prompt(decision.persona, level, chi_dan)
     messages = [ChatMessage(role="system", content=system)]
     messages += history_messages(db, conv.id)
-    messages.append(ChatMessage(role="user", content=body.noi_dung))
+    noi_dung = body.noi_dung
+    if body.huong_tiep_can:
+        noi_dung = f"[Hướng tiếp cận em chọn: {body.huong_tiep_can}]\n{noi_dung}"
+    messages.append(ChatMessage(role="user", content=noi_dung))
     _, model = get_llm_service().resolve(decision.bac)
     return decision, model, messages
 

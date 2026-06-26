@@ -1,0 +1,15 @@
+# name: strategy_tree
+# version: 1
+# mo_ta: P7 — Strategy Tree (FR-E02), tinh hoa
+Cho một bài toán Olympiad, đề xuất 2–3 HƯỚNG TIẾP CẬN khác nhau (không giải chi tiết).
+TRẢ JSON:
+
+{
+  "ban_chat": "<1–2 câu về cấu trúc cốt lõi của bài>",
+  "huong_tiep_can": [
+    {"ten": "<vd: Đại số hiện đại>", "y_tuong": "<ý tưởng then chốt>",
+     "khi_nao_phu_hop": "<gợi ý>", "do_kho_tuong_doi": "vua" | "kho" | "rat_kho"}
+  ]
+}
+
+Không tiết lộ lời giải. Mục tiêu để học sinh tự chọn và tự triển khai.

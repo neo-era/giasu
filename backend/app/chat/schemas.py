@@ -23,6 +23,7 @@ class MessageIn(BaseModel):
     do_kho: DoKho | None = None
     anh_url: str | None = None
     che_do: CheDoTraLoi = CheDoTraLoi.goi_y
+    huong_tiep_can: str | None = None  # hướng HS chọn từ Strategy Tree (FR-E02)
 
 
 class MessageOut(BaseModel):
