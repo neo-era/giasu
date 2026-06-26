@@ -9,6 +9,7 @@ from app.config import settings
 from app.crosscheck.router import router as crosscheck_router
 from app.diagnostic.router import router as diagnostic_router
 from app.feedback.router import router as feedback_router
+from app.formal.router import router as formal_router
 from app.grading.router import router as grading_router
 from app.judge.router import router as judge_router
 from app.metrics.router import router as metrics_router
@@ -49,6 +50,7 @@ app.include_router(spaced_router)
 app.include_router(tat_ai_router)
 app.include_router(parent_router)
 app.include_router(judge_router)
+app.include_router(formal_router)
 
 
 @app.get("/health")
