@@ -17,6 +17,9 @@ class Settings(BaseSettings):
     # Thư mục chứa prompt sản xuất (mặc định <repo>/prompts). Loader nạp từ đây.
     prompts_dir: str = ""
 
+    # Virtual Judge (B34): TẮT cho tới khi sandbox cô lập qua kiểm thử bảo mật (FR-E07).
+    virtual_judge_enabled: bool = False
+
     # Khóa nhà cung cấp LLM — chỉ ở backend, đọc từ env (NFR-30)
     anthropic_api_key: str = ""
     openai_api_key: str = ""
