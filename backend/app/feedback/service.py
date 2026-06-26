@@ -106,6 +106,28 @@ def giai_quyet_loi(db: Session, phan_anh: PhanAnh, mo_ta_sua: str) -> BoHoiQuy:
     return hq
 
 
+def _token(text: str) -> set[str]:
+    return {t for t in "".join(c.lower() if c.isalnum() else " " for c in text).split() if t}
+
+
+def goi_y_tuong_tu(db: Session, q: str, k: int = 5) -> list[tuple[PhanAnh, float]]:
+    """Gợi ý phản ánh tương tự để chống trùng lặp khi gửi (FR-F11) — Jaccard token."""
+    tq = _token(q)
+    if not tq:
+        return []
+    rows = liet_ke(db)  # chỉ các phản ánh đang hiển thị
+    scored: list[tuple[PhanAnh, float]] = []
+    for pa in rows:
+        tp = _token(f"{pa.tieu_de} {pa.noi_dung}")
+        if not tp:
+            continue
+        score = len(tq & tp) / len(tq | tp)
+        if score > 0:
+            scored.append((pa, score))
+    scored.sort(key=lambda x: x[1], reverse=True)
+    return scored[:k]
+
+
 def thong_bao_cua(db: Session, nguoi_dung_id: str) -> list[ThongBao]:
     return list(
         db.scalars(

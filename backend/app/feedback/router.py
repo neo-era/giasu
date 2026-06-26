@@ -18,6 +18,7 @@ from app.feedback.service import (
     doi_trang_thai,
     dong_tinh,
     giai_quyet_loi,
+    goi_y_tuong_tu,
     liet_ke,
     liet_ke_binh_luan,
     tao_phan_anh,
@@ -135,6 +136,15 @@ def giai_quyet(phan_anh_id: str, body: GiaiQuyetIn, db: DbDep, _: TeamDep) -> Fe
     db.commit()
     db.refresh(pa)
     return to_out(pa)
+
+
+@router.get("/tuong-tu")
+def tuong_tu(db: DbDep, _: UserDep, q: str) -> list[dict]:
+    """Gợi ý phản ánh tương tự để chống trùng lặp khi gửi (FR-F11)."""
+    return [
+        {"id": pa.id, "tieu_de": pa.tieu_de, "do_tuong_dong": round(score, 3)}
+        for pa, score in goi_y_tuong_tu(db, q)
+    ]
 
 
 @router.get("/thong-bao/cua-toi", response_model=list[ThongBaoOut])
