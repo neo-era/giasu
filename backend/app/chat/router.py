@@ -14,6 +14,7 @@ from app.chat.schemas import (
 )
 from app.chat.service import (
     build_system_prompt,
+    dem_luot,
     history_messages,
     luu_tin_nhan,
     make_routing_request,
@@ -21,6 +22,12 @@ from app.chat.service import (
     user_context,
 )
 from app.db.session import get_db
+from app.effort import (
+    TrangThaiNoLuc,
+    con_duoc_goi_y,
+    da_qua_cong_no_luc,
+    directive_tiet_che,
+)
 from app.llm import ChatMessage, get_llm_service
 from app.models import HoiThoai, NguoiDung, TinNhan
 from app.models.enums import MucDoHoc, VaiTinNhan
@@ -82,12 +89,17 @@ def _prepare(db: Session, conv: HoiThoai, user: NguoiDung, body: MessageIn):
     decision = LLMRouter().route(
         make_routing_request(phan_khuc, is_free, body.do_kho, bool(body.anh_url))
     )
-    # Cổng nỗ lực thật do B14 tính; tạm chưa qua → giữ chế độ gợi mở.
-    da_qua_cong = False
-    chi_dan = directive_che_do(body.che_do, da_qua_cong)
+    # Cổng nỗ lực (FR-L03): quyết định ở backend theo số lượt đã thử, KHÔNG
+    # theo câu chữ → không thể "moi đáp án" bằng cách đổi cách hỏi.
+    so_hs, so_tro_ly = dem_luot(db, conv.id)
+    state = TrangThaiNoLuc(so_luot_hs=so_hs + 1, so_goi_y_da_dung=so_tro_ly)
+    chi_dan = directive_che_do(body.che_do, da_qua_cong_no_luc(state, body.che_do))
     # Scaffolding theo trình độ (FR-L02); streak tiến bộ tích hợp ở B22/B31.
     muc = tinh_muc_ho_tro(MucDoHoc(level))
     chi_dan = f"{chi_dan}\n{directive_ho_tro(muc)}"
+    # Tiết chế gợi ý (FR-L04)
+    if not con_duoc_goi_y(state):
+        chi_dan = f"{chi_dan}\n{directive_tiet_che()}"
     system = build_system_prompt(decision.persona, level, chi_dan)
     messages = [ChatMessage(role="system", content=system)]
     messages += history_messages(db, conv.id)

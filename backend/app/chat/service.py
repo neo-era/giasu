@@ -76,3 +76,11 @@ def luu_tin_nhan(
 
 def uoc_tinh_token_vao(messages: list[ChatMessage]) -> int:
     return sum(len(m.content.split()) for m in messages)
+
+
+def dem_luot(db: Session, conv_id: str) -> tuple[int, int]:
+    """(số lượt học sinh, số lượt trợ lý) trong hội thoại — cho cổng nỗ lực."""
+    rows = db.scalars(select(TinNhan).where(TinNhan.hoi_thoai_id == conv_id)).all()
+    so_hs = sum(1 for m in rows if m.vai == VaiTinNhan.nguoi_dung)
+    so_tro_ly = sum(1 for m in rows if m.vai == VaiTinNhan.tro_ly)
+    return so_hs, so_tro_ly
