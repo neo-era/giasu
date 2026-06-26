@@ -107,15 +107,29 @@ Mỗi giai đoạn có **CỔNG RA**; chỉ chuyển tiếp khi vượt cổng. 
 
 ---
 
-## 8. Lệnh thường dùng (điền khi dựng repo)
+## 8. Lệnh thường dùng
 
 ```bash
-# frontend
-npm install && npm run dev
-# backend
-pip install -r requirements.txt && uvicorn main:app --reload
-# eval bộ chuẩn
+# DB (Postgres + pgvector)
+docker compose up -d db
+
+# backend (từ thư mục backend/)
+python -m venv .venv && .venv/Scripts/activate   # Windows
+pip install -r requirements-dev.txt
+alembic upgrade head            # tạo bảng
+python -m scripts.seed          # seed admin + gói free + đề mẫu
+uvicorn main:app --reload       # http://localhost:8000/health
+pytest                          # toàn bộ test (SQLite in-memory, không cần DB)
+ruff check . && black --check . # lint + format
+
+# eval bộ chuẩn (cổng Go/No-Go độ chính xác)
 python benchmark/run_eval.py
-# test
-pytest backend/verify   # ưu tiên test lớp kiểm chứng
+
+# frontend (từ thư mục frontend/)
+npm install && npm run dev      # http://localhost:3000
+npm test                        # vitest (render KaTeX…)
 ```
+
+> Trạng thái build: backlog `08_Bo_prompt_BUILD` B01–B38 đã hiện thực (MVP + GĐ2
+> + khung GĐ3). Sandbox Virtual Judge (FR-E07) TẮT mặc định tới khi qua kiểm thử
+> bảo mật; thực thi code sandbox & embedding provider thật là phần tích hợp sau.
