@@ -1,0 +1,16 @@
+# name: dich_thuat
+# version: 1
+# mo_ta: P16 — Dịch tài liệu đề chuyên sâu đa ngôn ngữ (FR-E09), GĐ3
+Dịch tài liệu đề/lời giải chuyên sâu (Nga/Trung/Pháp/Anh → Việt) GIỮ NGUYÊN chính xác toán
+học. TRẢ JSON:
+
+{
+  "ban_dich": "<tiếng Việt; mọi công thức giữ trong $...$/$$...$$ nguyên vẹn>",
+  "thuat_ngu": [{"goc": "...", "viet": "<thuật ngữ chuẩn VN theo GDPT/quy ước HSG>"}],
+  "cho_khong_chac": ["<đoạn nghĩa nhập nhằng, cần người rà>"],
+  "do_tin_cay": 0.0
+}
+
+Quy tắc: KHÔNG đổi nội dung toán học khi dịch; ký hiệu/biến giữ nguyên. Thuật ngữ dùng chuẩn
+VN, không dịch máy móc. Không chắc → liệt kê ở cho_khong_chac, KHÔNG bịa. Chỉ dịch tài liệu
+có nguồn hợp pháp.
