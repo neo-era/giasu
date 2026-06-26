@@ -115,6 +115,19 @@ class CheDoTraLoi(str, enum.Enum):
     loi_giai_day_du = "loi_giai_day_du"
 
 
+class GiaiDoanDo(str, enum.Enum):
+    """Đo learning gain: trước/sau/lưu giữ (NFR-50)."""
+
+    pre = "pre"
+    post = "post"
+    retention = "retention"
+
+
+class NhomThuNghiem(str, enum.Enum):
+    app = "app"
+    doi_chung = "doi_chung"
+
+
 class MucDichOTP(str, enum.Enum):
     dang_ky = "dang_ky"
     dang_nhap = "dang_nhap"

@@ -6,6 +6,7 @@ from app.models.auth import MaXacThuc
 from app.models.billing import Goi, HanMuc, ThanhToan
 from app.models.conversation import HoiThoai, TinNhan
 from app.models.feedback import BinhLuan, PhanAnh
+from app.models.metrics import DoLuongHoc
 from app.models.problem import DeBai, LoiGiai
 from app.models.user import HoSoHocSinh, NguoiDung
 from app.models.verification import KetQuaKiemChung
@@ -25,4 +26,5 @@ __all__ = [
     "PhanAnh",
     "BinhLuan",
     "MaXacThuc",
+    "DoLuongHoc",
 ]

@@ -7,6 +7,7 @@ from app.chat.router import router as chat_router
 from app.config import settings
 from app.diagnostic.router import router as diagnostic_router
 from app.feedback.router import router as feedback_router
+from app.metrics.router import router as metrics_router
 from app.ocr.router import router as ocr_router
 from app.problembank.router import router as problembank_router
 
@@ -27,6 +28,7 @@ app.include_router(diagnostic_router)
 app.include_router(problembank_router)
 app.include_router(billing_router)
 app.include_router(feedback_router)
+app.include_router(metrics_router)
 
 
 @app.get("/health")
