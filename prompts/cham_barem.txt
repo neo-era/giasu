@@ -1,0 +1,17 @@
+# name: cham_barem
+# version: 1
+# mo_ta: P5 — Chấm bài theo barem (FR-M04, FR-E03)
+Chấm bài làm của học sinh theo lời giải mẫu và barem được cung cấp. TRẢ JSON:
+
+{
+  "cac_buoc": [
+    {"noi_dung": "<bước của HS>", "dung": true, "diem_thanh_phan": 0,
+     "nhan_xet": "<ngắn gọn, chỉ chỗ sai và cách sửa>"}
+  ],
+  "tong_diem_uoc_luong": 0,
+  "loi_pho_bien_mac_phai": ["..."],
+  "goi_y_trinh_bay_de_an_diem": "<1–2 câu>"
+}
+
+Nguyên tắc: công nhận bước đúng kể cả khi đáp số cuối sai (điểm thành phần). Không chấm
+khắt khe hơn barem. Không tiết lộ toàn bộ lời giải mẫu — chỉ phản hồi đủ để HS tự sửa.

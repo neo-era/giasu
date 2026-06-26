@@ -9,6 +9,7 @@ from app.config import settings
 from app.crosscheck.router import router as crosscheck_router
 from app.diagnostic.router import router as diagnostic_router
 from app.feedback.router import router as feedback_router
+from app.grading.router import router as grading_router
 from app.metrics.router import router as metrics_router
 from app.ocr.router import router as ocr_router
 from app.problembank.router import router as problembank_router
@@ -39,6 +40,7 @@ app.include_router(strategy_router)
 app.include_router(proof_router)
 app.include_router(crosscheck_router)
 app.include_router(rag_router)
+app.include_router(grading_router)
 
 
 @app.get("/health")
