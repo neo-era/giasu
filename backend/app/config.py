@@ -14,6 +14,9 @@ class Settings(BaseSettings):
     cors_origins: list[str] = ["http://localhost:3000"]
     debug: bool = True
 
+    # Thư mục chứa prompt sản xuất (mặc định <repo>/prompts). Loader nạp từ đây.
+    prompts_dir: str = ""
+
     # Khóa nhà cung cấp LLM — chỉ ở backend, đọc từ env (NFR-30)
     anthropic_api_key: str = ""
     openai_api_key: str = ""
