@@ -8,21 +8,31 @@ from app.models.enums import (
     TrangThaiPhanAnh,
     VaiTro,
 )
+from app.moderation.pii import che_thong_tin_ca_nhan
+from app.moderation.service import classify_text
 
 # Vai trò "đội ngũ" được trả lời/đổi trạng thái/kiểm duyệt (FR-F07)
 VAI_TRO_DOI_NGU = (VaiTro.bien_tap, VaiTro.quan_tri, VaiTro.hlv)
 
 
 def tao_phan_anh(db: Session, user: NguoiDung, body: FeedbackCreate) -> PhanAnh:
+    # NFR-33: kiểm duyệt server-side TRƯỚC khi lưu/hiển thị (không tin client).
+    # 1) Che thông tin cá nhân bằng regex tất định.
+    tieu_de, _ = che_thong_tin_ca_nhan(body.tieu_de)
+    noi_dung, _ = che_thong_tin_ca_nhan(body.noi_dung)
+    # 2) Phân loại độc hại/spam bằng P9.
+    kq = classify_text(noi_dung)
+
     # Luôn lưu người gửi (phục vụ kiểm duyệt/chống lạm dụng), nhưng ẩn khi hiển thị.
     pa = PhanAnh(
         nguoi_gui_id=user.id,
         an_danh=body.an_danh,
         chu_de=body.chu_de,
-        tieu_de=body.tieu_de,
-        noi_dung=body.noi_dung,
+        tieu_de=tieu_de,
+        noi_dung=noi_dung,
         anh_url=body.anh_url,
         loi_giai_id=body.loi_giai_id,
+        trang_thai_kiem_duyet=kq.quyet_dinh,
     )
     db.add(pa)
     db.flush()
@@ -52,8 +62,12 @@ def liet_ke(
     trang_thai: TrangThaiPhanAnh | None = None,
     sap_xep: str = "moi_nhat",
 ) -> list[PhanAnh]:
+    # Chỉ hiển thị nội dung đã cho phép hoặc chờ duyệt mặc định; ẩn nội dung bị
+    # chặn VÀ nội dung đang chờ người duyệt (FR-F08).
     stmt = select(PhanAnh).where(
-        PhanAnh.trang_thai_kiem_duyet != TrangThaiKiemDuyet.chan  # ẩn nội dung bị chặn
+        PhanAnh.trang_thai_kiem_duyet.notin_(
+            (TrangThaiKiemDuyet.chan, TrangThaiKiemDuyet.can_nguoi_duyet)
+        )
     )
     if chu_de is not None:
         stmt = stmt.where(PhanAnh.chu_de == chu_de)
