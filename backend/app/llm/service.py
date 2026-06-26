@@ -36,6 +36,10 @@ class LLMService:
             fallback_tier if fallback_tier is not None else settings.llm_fallback_tier
         )
 
+    def resolve(self, tier: BacModel | str) -> tuple[str, str]:
+        """Trả (provider, model) của một bậc — dùng để ghi model khi stream."""
+        return self._resolve(tier)
+
     def _resolve(self, tier: BacModel | str) -> tuple[str, str]:
         key = _tier_key(tier)
         if key not in self.tiers:

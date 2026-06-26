@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import UTC, datetime
 
 from sqlalchemy import DateTime, Enum, ForeignKey, Integer, String, Text, func
 from sqlalchemy.orm import Mapped, mapped_column, relationship
@@ -37,8 +37,13 @@ class TinNhan(IdMixin, Base):
     model_dung: Mapped[str | None] = mapped_column(String(100))
     token_vao: Mapped[int] = mapped_column(Integer, default=0, nullable=False)
     token_ra: Mapped[int] = mapped_column(Integer, default=0, nullable=False)
+    # default phía Python (microsecond) để thứ tự tin nhắn ổn định trên mọi DB;
+    # server_default giữ làm dự phòng phía DB.
     created_at: Mapped[datetime] = mapped_column(
-        DateTime(timezone=True), server_default=func.now(), nullable=False
+        DateTime(timezone=True),
+        default=lambda: datetime.now(UTC),
+        server_default=func.now(),
+        nullable=False,
     )
 
     hoi_thoai: Mapped["HoiThoai"] = relationship(back_populates="tin_nhan")
