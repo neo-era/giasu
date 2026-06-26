@@ -14,6 +14,22 @@ class FeedbackCreate(BaseModel):
     loi_giai_id: str | None = None
 
 
+class ReplyIn(BaseModel):
+    noi_dung: str
+
+
+class StatusIn(BaseModel):
+    trang_thai: TrangThaiPhanAnh
+
+
+class CommentOut(BaseModel):
+    id: str
+    noi_dung: str
+    la_phan_hoi_chinh_thuc: bool
+    vai_tro_nguoi_dang: str | None
+    created_at: datetime
+
+
 class FeedbackOut(BaseModel):
     id: str
     chu_de: ChuDePhanAnh
