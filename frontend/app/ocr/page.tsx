@@ -2,8 +2,8 @@
 
 import { useEffect, useState } from "react";
 
+import { Math } from "@/components/Math";
 import { ocrConfirm, ocrExtract, type OcrResult } from "@/lib/api";
-import { renderMath } from "@/lib/math";
 
 export default function OcrPage() {
   const [token, setToken] = useState("");
@@ -91,10 +91,7 @@ export default function OcrPage() {
           />
 
           <label className="text-sm text-gray-500">Xem trước</label>
-          <div
-            className="rounded bg-gray-50 p-3 text-base"
-            dangerouslySetInnerHTML={{ __html: renderMath(deLatex) }}
-          />
+          <Math className="block rounded bg-gray-50 p-3 text-base">{deLatex}</Math>
 
           {result.can_xac_nhan_lai && (
             <label className="flex items-center gap-2 text-sm">

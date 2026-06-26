@@ -2,8 +2,8 @@
 
 import { useEffect, useRef, useState } from "react";
 
+import { Math } from "@/components/Math";
 import { createConversation, streamMessage } from "@/lib/api";
-import { renderMath } from "@/lib/math";
 
 type Msg = { role: "user" | "assistant"; content: string };
 
@@ -81,13 +81,14 @@ export default function ChatPage() {
                 key={i}
                 className={m.role === "user" ? "text-right" : "text-left"}
               >
-                <div
+                <Math
                   className={
                     "inline-block max-w-[85%] rounded-2xl px-4 py-2 text-base " +
                     (m.role === "user" ? "bg-black text-white" : "bg-gray-100")
                   }
-                  dangerouslySetInnerHTML={{ __html: renderMath(m.content) }}
-                />
+                >
+                  {m.content}
+                </Math>
               </div>
             ))}
             <div ref={endRef} />
