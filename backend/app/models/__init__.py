@@ -8,6 +8,7 @@ from app.models.conversation import HoiThoai, TinNhan
 from app.models.feedback import BinhLuan, PhanAnh
 from app.models.metrics import DoLuongHoc
 from app.models.problem import DeBai, LoiGiai
+from app.models.review import HangDoiDuyet
 from app.models.user import HoSoHocSinh, NguoiDung
 from app.models.verification import KetQuaKiemChung
 
@@ -27,4 +28,5 @@ __all__ = [
     "BinhLuan",
     "MaXacThuc",
     "DoLuongHoc",
+    "HangDoiDuyet",
 ]

@@ -6,6 +6,7 @@ from app.auth.router import router as auth_router
 from app.billing.router import router as billing_router
 from app.chat.router import router as chat_router
 from app.config import settings
+from app.crosscheck.router import router as crosscheck_router
 from app.diagnostic.router import router as diagnostic_router
 from app.feedback.router import router as feedback_router
 from app.metrics.router import router as metrics_router
@@ -35,6 +36,7 @@ app.include_router(metrics_router)
 app.include_router(admin_router)
 app.include_router(strategy_router)
 app.include_router(proof_router)
+app.include_router(crosscheck_router)
 
 
 @app.get("/health")

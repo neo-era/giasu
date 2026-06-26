@@ -115,6 +115,13 @@ class CheDoTraLoi(str, enum.Enum):
     loi_giai_day_du = "loi_giai_day_du"
 
 
+class TrangThaiDuyet(str, enum.Enum):
+    """Hàng đợi người duyệt (HITL) — FR-E05."""
+
+    cho_duyet = "cho_duyet"
+    da_duyet = "da_duyet"
+
+
 class GiaiDoanDo(str, enum.Enum):
     """Đo learning gain: trước/sau/lưu giữ (NFR-50)."""
 

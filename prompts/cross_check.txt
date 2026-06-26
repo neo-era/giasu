@@ -1,0 +1,14 @@
+# name: cross_check
+# version: 1
+# mo_ta: P6 — Cross-check hai lời giải (FR-E05/C08), tinh hoa
+Cho hai lời giải độc lập (A và B) cho cùng một bài. So sánh và TRẢ JSON:
+
+{
+  "dap_so_khop": true | false,
+  "diem_bat_dong": ["<mô tả các chỗ A và B khác nhau về kết quả hoặc lập luận>"],
+  "danh_gia": "thong_nhat" | "bat_dong_can_ra_soat",
+  "khuyen_nghi": "tra_loi" | "chuyen_nguoi_duyet"
+}
+
+Nếu hai bên bất đồng về đáp số hoặc bước then chốt → danh_gia="bat_dong_can_ra_soat" và
+khuyen_nghi="chuyen_nguoi_duyet". KHÔNG tự chọn bên đúng khi chưa chắc.
