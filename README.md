@@ -26,8 +26,10 @@ python -m venv .venv
 # Windows: .venv\Scripts\activate   |   macOS/Linux: source .venv/bin/activate
 pip install -r requirements-dev.txt
 cp .env.example .env          # điền khóa LLM ở đây — KHÔNG commit (NFR-30)
+alembic upgrade head          # tạo bảng (cần DB ở bước 1)
+python -m scripts.seed        # seed admin + gói free + đề mẫu (idempotent)
 uvicorn main:app --reload     # http://localhost:8000/health
-pytest                        # chạy test
+pytest                        # chạy test (SQLite in-memory, không cần DB)
 ```
 
 ### 3. Frontend (Next.js)

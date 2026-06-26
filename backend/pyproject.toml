@@ -1,9 +1,12 @@
 [tool.ruff]
 line-length = 100
 target-version = "py311"
+extend-exclude = ["alembic/versions"]
 
 [tool.ruff.lint]
 select = ["E", "F", "I", "UP", "B"]
+# Giữ `(str, enum.Enum)` cho rõ ràng & tương thích SQLAlchemy thay vì StrEnum
+ignore = ["UP042"]
 
 [tool.black]
 line-length = 100
