@@ -34,7 +34,7 @@ from app.models import HoiThoai, NguoiDung, TinNhan
 from app.models.enums import MucDoHoc, VaiTinNhan
 from app.router import LLMRouter
 from app.scaffolding import directive_ho_tro, tinh_muc_ho_tro
-from app.tutor import directive_che_do
+from app.tutor import directive_che_do, directive_pham_vi
 
 router = APIRouter(prefix="/chat", tags=["chat"])
 
@@ -108,6 +108,10 @@ def _prepare(db: Session, conv: HoiThoai, user: NguoiDung, body: MessageIn):
     # Tiết chế gợi ý (FR-L04)
     if not con_duoc_goi_y(state):
         chi_dan = f"{chi_dan}\n{directive_tiet_che()}"
+    # Từ chối ngoài phạm vi cho đại trà (FR-M07)
+    pham_vi = directive_pham_vi(phan_khuc)
+    if pham_vi:
+        chi_dan = f"{chi_dan}\n{pham_vi}"
     system = build_system_prompt(decision.persona, level, chi_dan)
     messages = [ChatMessage(role="system", content=system)]
     messages += history_messages(db, conv.id)
