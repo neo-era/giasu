@@ -1,0 +1,12 @@
+[
+  {"id": "bd-01", "loai": "bien_doi", "lhs": "(x+1)^2", "rhs": "x^2 + 2x + 1", "ky_vong": "dung"},
+  {"id": "bd-02", "loai": "bien_doi", "lhs": "(x+1)^2", "rhs": "x^2 + 1", "ky_vong": "sai"},
+  {"id": "ng-01", "loai": "nghiem", "pt": "x^2 - 1 = 0", "nghiem": ["1", "-1"], "ky_vong": "dung"},
+  {"id": "ng-02", "loai": "nghiem", "pt": "x^2 - 1 = 0", "nghiem": ["1"], "ky_vong": "sai"},
+  {"id": "ng-03", "loai": "nghiem", "pt": "x^2 - 5x + 6 = 0", "nghiem": ["2", "3"], "ky_vong": "dung"},
+  {"id": "dh-01", "loai": "dao_ham", "bieu_thuc": "x^2", "dao_ham": "2*x", "ky_vong": "dung"},
+  {"id": "dh-02", "loai": "dao_ham", "bieu_thuc": "sin(x)", "dao_ham": "sin(x)", "ky_vong": "sai"},
+  {"id": "tp-01", "loai": "tich_phan", "bieu_thuc": "2*x", "ket_qua": "x^2", "ky_vong": "dung"},
+  {"id": "tp-02", "loai": "tich_phan", "bieu_thuc": "2*x", "ket_qua": "1", "can_duoi": "0", "can_tren": "1", "ky_vong": "dung"},
+  {"id": "tp-03", "loai": "tich_phan", "bieu_thuc": "2*x", "ket_qua": "x^3", "ky_vong": "sai"}
+]
