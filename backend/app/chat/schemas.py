@@ -2,7 +2,7 @@ from datetime import datetime
 
 from pydantic import BaseModel, ConfigDict
 
-from app.models.enums import DoKho, PhanKhuc, VaiTinNhan
+from app.models.enums import CheDoTraLoi, DoKho, PhanKhuc, VaiTinNhan
 
 
 class ConversationCreate(BaseModel):
@@ -22,6 +22,7 @@ class MessageIn(BaseModel):
     noi_dung: str
     do_kho: DoKho | None = None
     anh_url: str | None = None
+    che_do: CheDoTraLoi = CheDoTraLoi.goi_y
 
 
 class MessageOut(BaseModel):

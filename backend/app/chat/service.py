@@ -18,12 +18,13 @@ def user_context(db: Session, user: NguoiDung) -> tuple[PhanKhuc, bool, str]:
     return phan_khuc, is_free, level
 
 
-def build_system_prompt(persona: str, level: str) -> str:
+def build_system_prompt(persona: str, level: str, chi_dan: str = "") -> str:
     loader = get_persona_loader()
     tpl = loader.load(persona)
     ctx = {"LEVEL": level}
     needed = {k: ctx.get(k, "") for k in tpl.required_vars}
-    return tpl.render(**needed)
+    base = tpl.render(**needed)
+    return f"{base}\n\n{chi_dan}" if chi_dan else base
 
 
 def history_messages(db: Session, conv_id: str) -> list[ChatMessage]:

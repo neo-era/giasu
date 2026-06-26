@@ -25,6 +25,7 @@ from app.llm import ChatMessage, get_llm_service
 from app.models import HoiThoai, NguoiDung, TinNhan
 from app.models.enums import VaiTinNhan
 from app.router import LLMRouter
+from app.tutor import directive_che_do
 
 router = APIRouter(prefix="/chat", tags=["chat"])
 
@@ -80,7 +81,10 @@ def _prepare(db: Session, conv: HoiThoai, user: NguoiDung, body: MessageIn):
     decision = LLMRouter().route(
         make_routing_request(phan_khuc, is_free, body.do_kho, bool(body.anh_url))
     )
-    system = build_system_prompt(decision.persona, level)
+    # Cổng nỗ lực thật do B14 tính; tạm chưa qua → giữ chế độ gợi mở.
+    da_qua_cong = False
+    chi_dan = directive_che_do(body.che_do, da_qua_cong)
+    system = build_system_prompt(decision.persona, level, chi_dan)
     messages = [ChatMessage(role="system", content=system)]
     messages += history_messages(db, conv.id)
     messages.append(ChatMessage(role="user", content=body.noi_dung))

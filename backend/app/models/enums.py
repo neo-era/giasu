@@ -108,6 +108,13 @@ class TrangThaiPhanAnh(str, enum.Enum):
     da_dong = "da_dong"
 
 
+class CheDoTraLoi(str, enum.Enum):
+    """Chế độ trả lời của gia sư (FR-M01/L03): mặc định chỉ gợi ý."""
+
+    goi_y = "goi_y"
+    loi_giai_day_du = "loi_giai_day_du"
+
+
 class MucDichOTP(str, enum.Enum):
     dang_ky = "dang_ky"
     dang_nhap = "dang_nhap"
