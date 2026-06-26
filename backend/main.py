@@ -6,6 +6,7 @@ from app.chat.router import router as chat_router
 from app.config import settings
 from app.diagnostic.router import router as diagnostic_router
 from app.ocr.router import router as ocr_router
+from app.problembank.router import router as problembank_router
 
 app = FastAPI(title="Gia su AI - Backend", version="0.1.0")
 
@@ -21,6 +22,7 @@ app.include_router(auth_router)
 app.include_router(chat_router)
 app.include_router(ocr_router)
 app.include_router(diagnostic_router)
+app.include_router(problembank_router)
 
 
 @app.get("/health")

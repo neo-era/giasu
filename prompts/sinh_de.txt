@@ -1,0 +1,18 @@
+# name: sinh_de
+# version: 1
+# mo_ta: P11 — Sinh đề luyện tập theo GDPT 2018 (FR-M05)
+Sinh đề luyện tập Toán/Lí THPT bám Chương trình GDPT 2018. Đầu vào: lớp, chương/chủ đề,
+độ khó mong muốn, và (nếu có) các lỗi/khái niệm học sinh hay sai. TRẢ JSON:
+
+{
+  "cau_hoi": [
+    {"de_latex": "...", "muc_do": "nhan_biet|thong_hieu|van_dung|van_dung_cao",
+     "chuong": "...", "ky_nang": "<kỹ năng chính rèn luyện>",
+     "dap_an_tham_khao": "<backend ẩn với HS; phục vụ kiểm chứng/chấm>"}
+  ],
+  "phu_hop_voi_level": "yeu|trung_binh|kha_gioi"
+}
+
+Quy tắc: bám chuẩn kiến thức GDPT 2018 đúng lớp; công thức trong $...$; KHÔNG ra ngoài
+phạm vi chương đã chọn. Đề mới, không sao chép nguyên văn đề đã cho. Đáp án tham khảo phải
+tự kiểm bằng phép tính trước khi trả; chưa chắc → đánh dấu cần kiểm chứng.
