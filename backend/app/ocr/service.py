@@ -1,22 +1,8 @@
-import json
-
 from app.llm import BacModel, ChatMessage, LLMError
+from app.llm.jsonout import extract_json
 from app.llm.service import LLMService, get_llm_service
 from app.ocr.schemas import OcrResult
 from app.personas import get_persona_loader
-
-
-def _extract_json(text: str) -> dict | None:
-    """Lấy object JSON đầu tiên trong text (model có thể kèm chữ thừa)."""
-    start = text.find("{")
-    end = text.rfind("}")
-    if start == -1 or end == -1 or end < start:
-        return None
-    try:
-        obj = json.loads(text[start : end + 1])
-        return obj if isinstance(obj, dict) else None
-    except json.JSONDecodeError:
-        return None
 
 
 class OcrService:
@@ -50,7 +36,7 @@ class OcrService:
         except LLMError:
             return self._fallback(text)
 
-        data = _extract_json(result.text)
+        data = extract_json(result.text)
         if data is None:
             return self._fallback(text)
 

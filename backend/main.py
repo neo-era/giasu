@@ -4,6 +4,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from app.auth.router import router as auth_router
 from app.chat.router import router as chat_router
 from app.config import settings
+from app.diagnostic.router import router as diagnostic_router
 from app.ocr.router import router as ocr_router
 
 app = FastAPI(title="Gia su AI - Backend", version="0.1.0")
@@ -19,6 +20,7 @@ app.add_middleware(
 app.include_router(auth_router)
 app.include_router(chat_router)
 app.include_router(ocr_router)
+app.include_router(diagnostic_router)
 
 
 @app.get("/health")
