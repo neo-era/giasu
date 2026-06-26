@@ -22,6 +22,56 @@ export async function createConversation(
   return r.json();
 }
 
+export type OcrResult = {
+  de_latex: string;
+  mon: string;
+  lop: number | null;
+  phan_khuc_goi_y: string;
+  do_kho: string | null;
+  ocr_tin_cay: number;
+  can_xac_nhan_lai: boolean;
+};
+
+export async function ocrExtract(
+  token: string,
+  input: { image?: string; text?: string },
+): Promise<OcrResult> {
+  const r = await fetch(`${API}/ocr/extract`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify(input),
+  });
+  if (!r.ok) throw new Error(`OCR lỗi: ${r.status}`);
+  return r.json();
+}
+
+export async function ocrConfirm(
+  token: string,
+  body: {
+    de_latex: string;
+    mon?: string;
+    lop?: number | null;
+    do_kho?: string | null;
+    can_xac_nhan_lai: boolean;
+    da_xac_nhan: boolean;
+  },
+): Promise<{ id: string; de_latex: string }> {
+  const r = await fetch(`${API}/ocr/confirm`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify(body),
+  });
+  if (r.status === 409) throw new Error("Cần xác nhận/sửa đề trước khi dùng");
+  if (!r.ok) throw new Error(`Xác nhận lỗi: ${r.status}`);
+  return r.json();
+}
+
 /** Stream câu trả lời theo SSE; yield từng đoạn văn bản. */
 export async function* streamMessage(
   token: string,
