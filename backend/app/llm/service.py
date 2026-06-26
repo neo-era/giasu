@@ -84,8 +84,12 @@ class LLMService:
 
 @lru_cache
 def get_llm_service() -> LLMService:
-    """Singleton dùng trong app; đảm bảo các nhà cung cấp mặc định đã đăng ký."""
+    """Singleton dùng trong app; đảm bảo các nhà cung cấp mặc định đã đăng ký.
+
+    Dùng ánh xạ bậc từ runtime_config để quản trị đổi model không cần deploy
+    lại (gọi get_llm_service.cache_clear() sau khi đổi cấu hình)."""
     from app.llm.providers import init_default_providers
+    from app.runtime_config import get_tiers
 
     init_default_providers()
-    return LLMService()
+    return LLMService(tiers=get_tiers())
