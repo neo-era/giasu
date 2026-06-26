@@ -12,6 +12,7 @@ from app.feedback.router import router as feedback_router
 from app.grading.router import router as grading_router
 from app.metrics.router import router as metrics_router
 from app.ocr.router import router as ocr_router
+from app.parent.router import router as parent_router
 from app.problembank.router import router as problembank_router
 from app.proof.router import router as proof_router
 from app.rag.router import router as rag_router
@@ -45,6 +46,7 @@ app.include_router(rag_router)
 app.include_router(grading_router)
 app.include_router(spaced_router)
 app.include_router(tat_ai_router)
+app.include_router(parent_router)
 
 
 @app.get("/health")
