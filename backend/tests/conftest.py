@@ -10,6 +10,21 @@ from app.db.session import get_db
 from main import app
 
 
+@pytest.fixture(autouse=True)
+def _llm_defaults():
+    """Mỗi test bắt đầu với registry LLM mặc định (mock) + cache service sạch.
+
+    Tránh rò trạng thái giữa các test có reset_registry/đổi runtime tiers."""
+    from app.llm.providers import init_default_providers
+    from app.llm.registry import reset_registry
+    from app.llm.service import get_llm_service
+
+    reset_registry()
+    init_default_providers()
+    get_llm_service.cache_clear()
+    yield
+
+
 def _memory_engine():
     return create_engine(
         "sqlite+pysqlite:///:memory:",
