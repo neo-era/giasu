@@ -64,6 +64,8 @@ class ThanhToan(IdMixin, Base):
         Enum(TrangThaiThanhToan), default=TrangThaiThanhToan.cho, nullable=False
     )
     ma_giao_dich: Mapped[str | None] = mapped_column(String(100), unique=True)
+    # Gói mà giao dịch này mua (để nâng cấp khi xác nhận)
+    goi_muon: Mapped[LoaiGoi | None] = mapped_column(Enum(LoaiGoi))
     created_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True), server_default=func.now(), nullable=False
     )

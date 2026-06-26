@@ -2,6 +2,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from app.auth.router import router as auth_router
+from app.billing.router import router as billing_router
 from app.chat.router import router as chat_router
 from app.config import settings
 from app.diagnostic.router import router as diagnostic_router
@@ -23,6 +24,7 @@ app.include_router(chat_router)
 app.include_router(ocr_router)
 app.include_router(diagnostic_router)
 app.include_router(problembank_router)
+app.include_router(billing_router)
 
 
 @app.get("/health")

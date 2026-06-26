@@ -6,6 +6,7 @@ from sqlalchemy import select
 from sqlalchemy.orm import Session
 
 from app.auth.deps import get_current_active_user
+from app.billing.service import QuotaExceeded, kiem_va_dung_luot
 from app.chat.schemas import (
     ConversationCreate,
     ConversationOut,
@@ -46,6 +47,13 @@ def _get_owned_conv(db: Session, conv_id: str, user: NguoiDung) -> HoiThoai:
     if conv is None or conv.nguoi_dung_id != user.id:
         raise HTTPException(status.HTTP_404_NOT_FOUND, "Không tìm thấy hội thoại")
     return conv
+
+
+def _kiem_han_muc(db: Session, user: NguoiDung) -> None:
+    try:
+        kiem_va_dung_luot(db, user)
+    except QuotaExceeded as exc:
+        raise HTTPException(status.HTTP_429_TOO_MANY_REQUESTS, str(exc)) from exc
 
 
 @router.post("/conversations", response_model=ConversationOut, status_code=201)
@@ -111,6 +119,7 @@ def _prepare(db: Session, conv: HoiThoai, user: NguoiDung, body: MessageIn):
 @router.post("/conversations/{conv_id}/messages", response_model=MessageOut)
 def send_message(conv_id: str, body: MessageIn, db: DbDep, user: UserDep) -> TinNhan:
     conv = _get_owned_conv(db, conv_id, user)
+    _kiem_han_muc(db, user)
     decision, _, messages = _prepare(db, conv, user, body)
 
     luu_tin_nhan(db, conv, vai=VaiTinNhan.nguoi_dung, noi_dung=body.noi_dung, anh_url=body.anh_url)
@@ -132,6 +141,7 @@ def send_message(conv_id: str, body: MessageIn, db: DbDep, user: UserDep) -> Tin
 @router.post("/conversations/{conv_id}/stream")
 def stream_message(conv_id: str, body: MessageIn, db: DbDep, user: UserDep) -> StreamingResponse:
     conv = _get_owned_conv(db, conv_id, user)
+    _kiem_han_muc(db, user)
     decision, model, messages = _prepare(db, conv, user, body)
     token_vao = uoc_tinh_token_vao(messages)
 
