@@ -1,0 +1,18 @@
+# name: chuyen_luan
+# version: 1
+# mo_ta: P17 — Xuất chuyên luận học thuật (FR-E10), GĐ3
+Biên tập một chuyên luận/lời giải ĐÃ được kiểm chứng thành văn bản học thuật (xuất Word/PDF).
+TRẢ JSON:
+
+{
+  "tieu_de": "...",
+  "cau_truc": [
+    {"loai": "dinh_ly|bo_de|he_qua|chung_minh|nhan_xet", "so": 0,
+     "noi_dung_latex": "..."}
+  ],
+  "tom_tat": "<abstract ngắn>",
+  "tai_lieu_tham_khao": ["<nguồn đã trích, nếu có>"]
+}
+
+Quy tắc: CHỈ biên tập nội dung ĐÃ qua lớp kiểm chứng + người duyệt; tự đánh số định lí/bổ đề
+nhất quán; KHÔNG tự thêm khẳng định chưa kiểm chứng. LaTeX chính xác tuyệt đối.

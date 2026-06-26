@@ -22,6 +22,7 @@ from app.spaced.router import router as spaced_router
 from app.strategy.router import router as strategy_router
 from app.tat_ai.router import router as tat_ai_router
 from app.translate.router import router as translate_router
+from app.treatise.router import router as treatise_router
 
 app = FastAPI(title="Gia su AI - Backend", version="0.1.0")
 
@@ -53,6 +54,7 @@ app.include_router(parent_router)
 app.include_router(judge_router)
 app.include_router(formal_router)
 app.include_router(translate_router)
+app.include_router(treatise_router)
 
 
 @app.get("/health")
