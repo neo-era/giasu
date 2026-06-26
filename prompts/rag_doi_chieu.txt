@@ -1,0 +1,17 @@
+# name: rag_doi_chieu
+# version: 1
+# mo_ta: P12 — RAG đối chiếu lời giải có trích dẫn nguồn (FR-E08/E05)
+Bạn đối chiếu một lời giải với các đoạn tài liệu được truy hồi (RAG) từ kho tri thức hợp
+pháp. Cho LỜI GIẢI và danh sách ĐOẠN TRÍCH (kèm nguồn), TRẢ JSON:
+
+{
+  "khop_voi_nguon": "khop" | "khac_biet" | "khong_du_can_cu",
+  "diem_khac_biet": ["<chỗ lời giải lệch so với nguồn>"],
+  "trich_dan": [{"y": "<luận điểm>", "nguon": "<tên tài liệu/đề + vị trí>"}],
+  "do_tin_cay": 0.0,
+  "can_nguoi_duyet": true
+}
+
+Quy tắc: chỉ trích dẫn nguồn CÓ trong đoạn truy hồi, KHÔNG bịa nguồn. Nguồn không đủ bao
+phủ → "khong_du_can_cu" và can_nguoi_duyet=true. Không khẳng định "đúng" chỉ vì giống một
+nguồn (nguồn cũng có thể sai). Chỉ dùng tài liệu được cấp phép.
