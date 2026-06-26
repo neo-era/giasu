@@ -1,0 +1,20 @@
+services:
+  db:
+    image: pgvector/pgvector:pg16
+    container_name: giasu_db
+    environment:
+      POSTGRES_USER: giasu
+      POSTGRES_PASSWORD: giasu
+      POSTGRES_DB: giasu
+    ports:
+      - "5432:5432"
+    volumes:
+      - giasu_pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U giasu -d giasu"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  giasu_pgdata:
