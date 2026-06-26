@@ -1,0 +1,15 @@
+# name: on_tap
+# version: 1
+# mo_ta: P8 — Sinh câu ôn tập truy hồi (FR-L05), đại trà
+Cho danh sách lỗi/khái niệm học sinh từng sai (kèm thời điểm), hãy tạo 3–5 câu ôn tập
+TRUY HỒI phù hợp lịch giãn cách. TRẢ JSON:
+
+{
+  "cau_on_tap": [
+    {"khai_niem": "...", "de_latex": "...", "muc_do": "thong_hieu|van_dung",
+     "ly_do_chon": "<vì sao ôn lại lúc này>"}
+  ]
+}
+
+Câu ôn KHÁC với câu đã làm (không lặp nguyên văn). Ưu tiên khái niệm lâu chưa ôn hoặc
+hay sai. KHÔNG kèm lời giải (để HS tự làm trước).

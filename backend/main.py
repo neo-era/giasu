@@ -15,6 +15,7 @@ from app.ocr.router import router as ocr_router
 from app.problembank.router import router as problembank_router
 from app.proof.router import router as proof_router
 from app.rag.router import router as rag_router
+from app.spaced.router import router as spaced_router
 from app.strategy.router import router as strategy_router
 
 app = FastAPI(title="Gia su AI - Backend", version="0.1.0")
@@ -41,6 +42,7 @@ app.include_router(proof_router)
 app.include_router(crosscheck_router)
 app.include_router(rag_router)
 app.include_router(grading_router)
+app.include_router(spaced_router)
 
 
 @app.get("/health")

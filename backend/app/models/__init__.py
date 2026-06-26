@@ -10,6 +10,7 @@ from app.models.knowledge import TaiLieu
 from app.models.metrics import DoLuongHoc
 from app.models.problem import DeBai, LoiGiai
 from app.models.review import HangDoiDuyet
+from app.models.review_spaced import KhaiNiemOn
 from app.models.user import HoSoHocSinh, NguoiDung
 from app.models.verification import KetQuaKiemChung
 
@@ -31,4 +32,5 @@ __all__ = [
     "DoLuongHoc",
     "HangDoiDuyet",
     "TaiLieu",
+    "KhaiNiemOn",
 ]
