@@ -29,7 +29,7 @@ from app.effort import (
     da_qua_cong_no_luc,
     directive_tiet_che,
 )
-from app.llm import ChatMessage, get_llm_service
+from app.llm import ChatMessage, LLMError, get_llm_service
 from app.models import HoiThoai, NguoiDung, TinNhan
 from app.models.enums import MucDoHoc, VaiTinNhan
 from app.router import LLMRouter
@@ -130,7 +130,11 @@ def send_message(conv_id: str, body: MessageIn, db: DbDep, user: UserDep) -> Tin
     decision, _, messages = _prepare(db, conv, user, body)
 
     luu_tin_nhan(db, conv, vai=VaiTinNhan.nguoi_dung, noi_dung=body.noi_dung, anh_url=body.anh_url)
-    result = get_llm_service().complete(decision.bac, messages)
+    try:
+        result = get_llm_service().complete(decision.bac, messages)
+    except LLMError as exc:
+        db.commit()  # giữ tin nhắn người dùng đã lưu
+        raise HTTPException(status.HTTP_502_BAD_GATEWAY, f"Lỗi gọi model: {exc}") from exc
     assistant = luu_tin_nhan(
         db,
         conv,

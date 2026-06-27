@@ -50,10 +50,15 @@ class OpenAIProvider(LLMProvider):
                 headers=headers,
                 timeout=timeout,
             )
-            resp.raise_for_status()
-            data = resp.json()
         except httpx.HTTPError as exc:
-            raise LLMError(f"OpenAI request lỗi: {type(exc).__name__}") from exc
+            raise LLMError(f"OpenAI kết nối lỗi: {type(exc).__name__}") from exc
+        if resp.status_code >= 400:
+            try:
+                msg = resp.json().get("error", {}).get("message", "")
+            except ValueError:
+                msg = resp.text[:200]
+            raise LLMError(f"OpenAI {resp.status_code}: {msg}")
+        data = resp.json()
 
         text = data["choices"][0]["message"]["content"]
         usage = data.get("usage", {})

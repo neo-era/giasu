@@ -10,17 +10,29 @@ from app.db.session import get_db
 from main import app
 
 
+# Bậc model dùng cho test — LUÔN là mock, độc lập với .env của môi trường dev.
+_MOCK_TIERS = {
+    "re": "mock:mock-fast",
+    "can_bang": "mock:mock-balanced",
+    "reasoning": "mock:mock-reasoning",
+    "vision": "mock:mock-vision",
+}
+
+
 @pytest.fixture(autouse=True)
 def _llm_defaults():
-    """Mỗi test bắt đầu với registry LLM mặc định (mock) + cache service sạch.
+    """Mỗi test bắt đầu với registry mock + tiers mock + cache service sạch.
 
-    Tránh rò trạng thái giữa các test có reset_registry/đổi runtime tiers."""
+    Ép tiers mock để test KHÔNG phụ thuộc cấu hình LLM thật trong .env, và tránh
+    rò trạng thái giữa các test có reset_registry/đổi runtime tiers."""
     from app.llm.providers import init_default_providers
     from app.llm.registry import reset_registry
     from app.llm.service import get_llm_service
+    from app.runtime_config import set_tiers
 
     reset_registry()
     init_default_providers()
+    set_tiers(_MOCK_TIERS)
     get_llm_service.cache_clear()
     yield
 

@@ -59,11 +59,16 @@ class AnthropicProvider(LLMProvider):
                 headers=headers,
                 timeout=timeout,
             )
-            resp.raise_for_status()
-            data = resp.json()
         except httpx.HTTPError as exc:
-            # Chỉ nêu loại lỗi, KHÔNG đính kèm headers/khóa
-            raise LLMError(f"Anthropic request lỗi: {type(exc).__name__}") from exc
+            raise LLMError(f"Anthropic kết nối lỗi: {type(exc).__name__}") from exc
+        if resp.status_code >= 400:
+            # Thông báo lỗi của Anthropic KHÔNG chứa khóa → an toàn để nêu
+            try:
+                msg = resp.json().get("error", {}).get("message", "")
+            except ValueError:
+                msg = resp.text[:200]
+            raise LLMError(f"Anthropic {resp.status_code}: {msg}")
+        data = resp.json()
 
         text = "".join(
             block.get("text", "")
