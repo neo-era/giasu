@@ -1,22 +1,26 @@
 "use client";
 
+import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 
 import { Math } from "@/components/Math";
-import { createConversation, streamMessage } from "@/lib/api";
+import { clearToken, createConversation, getToken, streamMessage } from "@/lib/api";
 
 type Msg = { role: "user" | "assistant"; content: string };
 
 export default function ChatPage() {
-  const [token, setToken] = useState("");
+  const router = useRouter();
+  const [token, setToken] = useState<string | null>(null);
   const [convId, setConvId] = useState<string | null>(null);
   const [messages, setMessages] = useState<Msg[]>([]);
   const [input, setInput] = useState("");
   const [busy, setBusy] = useState(false);
+  const [err, setErr] = useState("");
   const endRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    setToken(localStorage.getItem("giasu_token") ?? "");
+    setToken(getToken());
   }, []);
 
   useEffect(() => {
@@ -24,14 +28,24 @@ export default function ChatPage() {
   }, [messages]);
 
   async function start() {
-    localStorage.setItem("giasu_token", token);
-    const conv = await createConversation(token);
-    setConvId(conv.id);
-    setMessages([]);
+    if (!token) return;
+    setErr("");
+    try {
+      const conv = await createConversation(token);
+      setConvId(conv.id);
+      setMessages([]);
+    } catch (e) {
+      setErr(String(e instanceof Error ? e.message : e));
+    }
+  }
+
+  function dangXuat() {
+    clearToken();
+    router.push("/dang-nhap");
   }
 
   async function send() {
-    if (!convId || !input.trim() || busy) return;
+    if (!convId || !token || !input.trim() || busy) return;
     const userMsg = input.trim();
     setInput("");
     setBusy(true);
@@ -54,24 +68,36 @@ export default function ChatPage() {
 
   return (
     <main className="mx-auto flex min-h-screen max-w-2xl flex-col p-4">
-      <h1 className="mb-3 text-lg font-semibold">Gia sư AI — Trò chuyện</h1>
+      <div className="mb-3 flex items-center justify-between">
+        <h1 className="text-lg font-semibold">Gia sư AI — Trò chuyện</h1>
+        {token && (
+          <button className="text-sm text-gray-500 underline" onClick={dangXuat}>
+            Đăng xuất
+          </button>
+        )}
+      </div>
 
-      {!convId ? (
+      {token === null ? (
+        <p className="text-sm text-gray-500">Đang tải…</p>
+      ) : token === "" ? (
         <div className="flex flex-col gap-2">
-          <label className="text-sm text-gray-500">Token (dev)</label>
-          <input
-            className="rounded border p-2 text-base"
-            value={token}
-            onChange={(e) => setToken(e.target.value)}
-            placeholder="Dán access_token"
-          />
+          <p className="text-sm text-gray-600">Bạn chưa đăng nhập.</p>
+          <Link
+            href="/dang-nhap"
+            className="rounded bg-black p-3 text-center text-base text-white"
+          >
+            Đăng nhập để bắt đầu
+          </Link>
+        </div>
+      ) : !convId ? (
+        <div className="flex flex-col gap-2">
           <button
-            className="rounded bg-black p-3 text-base text-white disabled:opacity-50"
+            className="rounded bg-black p-3 text-base text-white"
             onClick={start}
-            disabled={!token}
           >
             Bắt đầu hội thoại
           </button>
+          {err && <p className="text-sm text-red-600">{err}</p>}
         </div>
       ) : (
         <>

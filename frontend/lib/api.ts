@@ -1,5 +1,62 @@
 const API = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8000";
 
+export function getToken(): string {
+  if (typeof window === "undefined") return "";
+  return localStorage.getItem("giasu_token") ?? "";
+}
+
+export function setToken(token: string): void {
+  localStorage.setItem("giasu_token", token);
+}
+
+export function clearToken(): void {
+  localStorage.removeItem("giasu_token");
+}
+
+async function _detail(r: Response): Promise<string> {
+  try {
+    const d = await r.json();
+    return typeof d.detail === "string" ? d.detail : `Lỗi ${r.status}`;
+  } catch {
+    return `Lỗi ${r.status}`;
+  }
+}
+
+export async function login(dinhDanh: string, password: string): Promise<string> {
+  const r = await fetch(`${API}/auth/login`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ dinh_danh: dinhDanh, password }),
+  });
+  if (!r.ok) throw new Error(await _detail(r));
+  const data = await r.json();
+  setToken(data.access_token);
+  return data.access_token;
+}
+
+export async function register(
+  email: string,
+  password: string,
+  phanKhuc = "dai_tra",
+): Promise<{ otp_dev?: string }> {
+  const r = await fetch(`${API}/auth/register`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ email, password, phan_khuc: phanKhuc }),
+  });
+  if (!r.ok) throw new Error(await _detail(r));
+  return r.json();
+}
+
+export async function verifyOtp(dinhDanh: string, ma: string): Promise<void> {
+  const r = await fetch(`${API}/auth/verify-otp`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ dinh_danh: dinhDanh, ma }),
+  });
+  if (!r.ok) throw new Error(await _detail(r));
+}
+
 export type Conversation = {
   id: string;
   chu_de: string | null;

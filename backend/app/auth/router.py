@@ -15,6 +15,7 @@ from app.auth.schemas import (
     VerifyOtpIn,
 )
 from app.auth.security import create_access_token, hash_password, verify_password
+from app.config import settings
 from app.db.session import get_db
 from app.models import HoSoHocSinh, NguoiDung
 from app.models.enums import MucDichOTP, TrangThaiNguoiDung, VaiTro
@@ -62,7 +63,11 @@ def register(body: RegisterIn, db: DbDep) -> dict[str, str]:
     code = create_otp(db, body.dinh_danh, MucDichOTP.dang_ky)
     db.commit()
     send_otp(body.dinh_danh, code)
-    return {"id": user.id, "message": "Đã gửi OTP để xác thực"}
+    resp = {"id": user.id, "message": "Đã gửi OTP để xác thực"}
+    # CHỈ ở chế độ dev: trả mã để tiện thử (production tắt DEBUG → không lộ OTP).
+    if settings.debug:
+        resp["otp_dev"] = code
+    return resp
 
 
 @router.post("/verify-otp")
