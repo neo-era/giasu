@@ -23,3 +23,14 @@ services:
         value: '{"re":"gemini:gemini-2.5-flash-lite","can_bang":"gemini:gemini-2.5-flash","reasoning":"gemini:gemini-2.5-flash","vision":"gemini:gemini-2.5-flash"}'
       - key: LLM_FALLBACK_TIER
         value: "re"
+
+  - type: web
+    name: giasu-frontend
+    runtime: node
+    rootDir: frontend
+    plan: free
+    buildCommand: npm ci && npm run build
+    startCommand: npm start
+    envVars:
+      - key: NEXT_PUBLIC_API_URL   # URL backend, vd https://giasu-backend.onrender.com
+        sync: false
