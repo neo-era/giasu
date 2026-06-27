@@ -1,0 +1,25 @@
+# Blueprint deploy backend lên Render (https://render.com).
+# Tạo "New + → Blueprint", trỏ tới repo này. Điền các secret (sync:false) trong dashboard.
+services:
+  - type: web
+    name: giasu-backend
+    runtime: docker
+    dockerfilePath: ./backend/Dockerfile
+    dockerContext: ./backend
+    plan: free
+    healthCheckPath: /health
+    envVars:
+      - key: DATABASE_URL          # Postgres (Neon/Supabase), dạng postgresql+psycopg://...
+        sync: false
+      - key: GEMINI_API_KEY        # khóa Google AI Studio
+        sync: false
+      - key: CORS_ORIGINS          # ví dụ ["https://giasu.vercel.app"]
+        sync: false
+      - key: JWT_SECRET
+        generateValue: true        # Render tự sinh chuỗi ngẫu nhiên an toàn
+      - key: DEBUG
+        value: "false"
+      - key: LLM_TIERS
+        value: '{"re":"gemini:gemini-2.5-flash-lite","can_bang":"gemini:gemini-2.5-flash","reasoning":"gemini:gemini-2.5-flash","vision":"gemini:gemini-2.5-flash"}'
+      - key: LLM_FALLBACK_TIER
+        value: "re"
