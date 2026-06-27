@@ -42,6 +42,8 @@ class Settings(BaseSettings):
     llm_timeout_seconds: float = 60.0
     llm_max_retries: int = 2
     llm_retry_backoff: float = 0.2
+    # Đủ chỗ cho output kể cả model có "thinking" (vd Gemini 2.5 flash)
+    llm_max_tokens: int = 4096
 
     # Router (FR-C07): số model cross-check cho bài tinh hoa quan trọng;
     # bảng giá ước tính USD/1 triệu token theo bậc [vào, ra] (NFR-41, FR-C11).

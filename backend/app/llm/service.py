@@ -27,6 +27,7 @@ class LLMService:
         max_retries: int | None = None,
         backoff: float | None = None,
         fallback_tier: str | None = None,
+        max_tokens: int | None = None,
     ) -> None:
         self.tiers = dict(tiers) if tiers is not None else dict(settings.llm_tiers)
         self.timeout = timeout if timeout is not None else settings.llm_timeout_seconds
@@ -35,6 +36,7 @@ class LLMService:
         self.fallback_tier = (
             fallback_tier if fallback_tier is not None else settings.llm_fallback_tier
         )
+        self.max_tokens = max_tokens if max_tokens is not None else settings.llm_max_tokens
 
     def resolve(self, tier: BacModel | str) -> tuple[str, str]:
         """Trả (provider, model) của một bậc — dùng để ghi model khi stream."""
@@ -57,6 +59,7 @@ class LLMService:
     def _attempt(self, tier: BacModel | str, messages: list[ChatMessage], **kw) -> ChatResult:
         provider_name, model = self._resolve(tier)
         provider = get_provider(provider_name)
+        kw.setdefault("max_tokens", self.max_tokens)
         last_exc: LLMError | None = None
         for i in range(self.max_retries + 1):
             try:
@@ -83,6 +86,7 @@ class LLMService:
     def stream(self, tier: BacModel | str, messages: list[ChatMessage], **kw) -> Iterator[str]:
         provider_name, model = self._resolve(tier)
         provider = get_provider(provider_name)
+        kw.setdefault("max_tokens", self.max_tokens)
         yield from provider.stream_chat(messages, model, timeout=self.timeout, **kw)
 
 
