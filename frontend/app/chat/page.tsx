@@ -61,6 +61,13 @@ export default function ChatPage() {
           return next;
         });
       }
+    } catch (e) {
+      const loi = e instanceof Error ? e.message : String(e);
+      setMessages((m) => {
+        const next = [...m];
+        next[next.length - 1] = { role: "assistant", content: `⚠️ ${loi}` };
+        return next;
+      });
     } finally {
       setBusy(false);
     }

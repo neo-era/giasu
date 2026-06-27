@@ -143,6 +143,7 @@ export async function* streamMessage(
     },
     body: JSON.stringify({ noi_dung: noiDung }),
   });
+  if (!r.ok) throw new Error(await _detail(r));
   if (!r.body) throw new Error("Phản hồi không có stream");
 
   const reader = r.body.getReader();
