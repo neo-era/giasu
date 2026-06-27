@@ -9,7 +9,6 @@ from app.db.base import Base
 from app.db.session import get_db
 from main import app
 
-
 # Bậc model dùng cho test — LUÔN là mock, độc lập với .env của môi trường dev.
 _MOCK_TIERS = {
     "re": "mock:mock-fast",

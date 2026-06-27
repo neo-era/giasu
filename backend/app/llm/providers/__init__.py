@@ -31,3 +31,12 @@ def init_default_providers() -> None:
                 base_url=settings.openai_base_url,
             )
         )
+    if settings.gemini_api_key:
+        # Gemini qua endpoint tương thích OpenAI → tái dùng OpenAIProvider, tên "gemini"
+        register_provider(
+            OpenAIProvider(
+                api_key=settings.gemini_api_key,
+                base_url=settings.gemini_base_url,
+                name="gemini",
+            )
+        )

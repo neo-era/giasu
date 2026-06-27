@@ -9,12 +9,18 @@ class OpenAIProvider(LLMProvider):
 
     name = "openai"
 
-    def __init__(self, api_key: str, base_url: str = "https://api.openai.com/v1") -> None:
+    def __init__(
+        self,
+        api_key: str,
+        base_url: str = "https://api.openai.com/v1",
+        name: str = "openai",
+    ) -> None:
+        self.name = name  # cho phép tái dùng cho endpoint tương thích OpenAI (vd Gemini)
         self._api_key = api_key
         self._base_url = base_url.rstrip("/")
 
     def __repr__(self) -> str:  # KHÔNG in khóa (NFR-30)
-        return f"OpenAIProvider(base_url={self._base_url!r}, api_key='***')"
+        return f"OpenAIProvider(name={self.name!r}, base_url={self._base_url!r}, api_key='***')"
 
     def _content(self, m: ChatMessage) -> list[dict] | str:
         if not m.images:

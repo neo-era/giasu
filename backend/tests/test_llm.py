@@ -84,6 +84,14 @@ def test_khong_lo_khoa_trong_repr():
     assert "***" in repr(p)
 
 
+def test_openai_provider_ten_tuy_bien_cho_gemini():
+    from app.llm.providers.openai import OpenAIProvider
+
+    p = OpenAIProvider(api_key="k", base_url="https://x/openai", name="gemini")
+    assert p.name == "gemini"  # tái dùng cho endpoint tương thích OpenAI
+    assert "k" not in repr(p) or "***" in repr(p)
+
+
 def test_stream_mock():
     svc = LLMService(tiers={"re": "mock:mock-fast"}, backoff=0)
     out = "".join(svc.stream(BacModel.re, _msgs()))
